@@ -67,6 +67,9 @@ a:hover{text-decoration:underline;text-underline-offset:3px}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 img,video{max-width:100%;display:block}
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip-link{position:absolute;left:-9999px;top:0;z-index:100;background:var(--accent);color:#04211b;padding:10px 18px;border-radius:0 0 10px 0;font-weight:600}
+.skip-link:focus{left:0}
 
 /* ---------- nav ---------- */
 nav{position:sticky;top:0;z-index:50;background:rgba(10,14,20,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
@@ -228,7 +231,9 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
 </head>
 <body>
 
-<nav>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<nav aria-label="Main">
   <div class="nav-inner">
     <a class="logo" href="#">austin<span>.</span>huang</a>
     <div class="nav-links" id="nav-menu">
@@ -264,13 +269,15 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
   </div>
 </header>
 
-<div class="stats">
+<main id="main">
+
+<div class="stats" role="region" aria-label="Key results">
   <div class="wrap">
     <div class="stats-grid">
-      <div class="stat reveal"><div class="stat-num">59<span class="arrow">→</span>100%</div><div class="stat-label">Task pass rate on a live production pharma deployment</div></div>
-      <div class="stat reveal"><div class="stat-num">−94%</div><div class="stat-label">Operational failures after system-level reliability overhaul</div></div>
+      <div class="stat reveal"><div class="stat-num" aria-hidden="true">59<span class="arrow">→</span>100%</div><span class="sr-only">From 59 to 100 percent:</span><div class="stat-label">Task pass rate on a live production pharma deployment</div></div>
+      <div class="stat reveal"><div class="stat-num" aria-hidden="true">−94%</div><span class="sr-only">Down 94 percent:</span><div class="stat-label">Operational failures after system-level reliability overhaul</div></div>
       <div class="stat reveal"><div class="stat-num">0.2 mm</div><div class="stat-label">End-effector error via Park–Martin hand-eye calibration</div></div>
-      <div class="stat reveal"><div class="stat-num">1B+</div><div class="stat-label">Views of Clash Bots — the TV show I built combat robots for</div></div>
+      <div class="stat reveal"><div class="stat-num" aria-hidden="true">1B+</div><span class="sr-only">Over 1 billion:</span><div class="stat-label">Views of Clash Bots — the TV show I built combat robots for</div></div>
     </div>
   </div>
 </div>
@@ -286,7 +293,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
       <div class="job reveal">
         <div class="job-head"><h3>XtalPi Inc.</h3> <span class="badge">Promoted to NA Manager</span> <span class="period">Aug 2024 – Present · Boston, MA</span></div>
         <div class="role">Automation Engineer → <em>Manager, Automation Systems &amp; Delivery – North America</em></div>
-        <ul>
+        <ul role="list">
           <li>Own end-to-end deployment and stabilization of a <strong>production-grade automated chemistry R&amp;D platform</strong> — system architecture, integration logic, and rollout readiness for XtalPi's first U.S. commercial deployment.</li>
           <li>Primary on-site system owner at <strong>a Fortune-500 pharma partner</strong>: raised task pass rates <strong>59% → 100%</strong> and target hit rates <strong>29% → 98%</strong> under real-world operating constraints.</li>
           <li>Cut operational failures by <strong>94%</strong> through reliability engineering across task coordination, vision-guided manipulation, and failure handling — contributing to customer adoption and multi-million-dollar expansion.</li>
@@ -300,7 +307,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
       <div class="job reveal">
         <div class="job-head"><h3>Axle Informatics · NIH</h3> <span class="period">Sep – Dec 2023 · Rockville, MD</span></div>
         <div class="role">Automation Research Associate (Internship)</div>
-        <ul>
+        <ul role="list">
           <li>Designed and deployed a <strong>High-Density Storage subsystem</strong> integrating Omron mobile robots and PF400 arms — <strong>37% faster</strong> end-to-end lab processes.</li>
           <li>Raised perception reliability <strong>53% → 98%</strong> via image-preprocessing and shape-detection work in OpenCV.</li>
         </ul>
@@ -310,7 +317,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
       <div class="job reveal">
         <div class="job-head"><h3>Laboratory for Computational Sensing &amp; Robotics, JHU</h3> <span class="period">May – Sep 2023 · Baltimore, MD</span></div>
         <div class="role">Research Assistant · Advisor: <em>Russell H. Taylor</em></div>
-        <ul>
+        <ul role="list">
           <li>Cut malaria-vaccine production setup time by <strong>62%</strong> with deep-learning computer vision.</li>
           <li>Hit <strong>96% ROI detection</strong> (YOLOv5) and used class-activation mapping to reach <strong>95% accuracy</strong> in vaccine quality prediction.</li>
         </ul>
@@ -320,7 +327,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
       <div class="job reveal">
         <div class="job-head"><h3>Dynacolor</h3> <span class="period">May 2019 – Mar 2021 · Taipei, Taiwan</span></div>
         <div class="role">R&amp;D Engineer</div>
-        <ul>
+        <ul role="list">
           <li>Engineered mechanical components for a <strong>6-DOF surgical camera system</strong> for fluorescence-guided surgery (IP66/67, IK10).</li>
           <li>Reduced product defects by <strong>more than 80%</strong> through SOP development, root-cause analysis, and process optimization.</li>
         </ul>
@@ -330,7 +337,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
       <div class="job reveal">
         <div class="job-head"><h3>iQIYI · Clash Bots</h3> <span class="badge gold">1B+ views on TV</span> <span class="period">Aug 2017 – Jun 2018 · Beijing, China</span></div>
         <div class="role">Robotics Engineer</div>
-        <ul>
+        <ul role="list">
           <li>Built <strong>110 kg combat robots</strong> from scratch for the Clash Bots TV series; led a team of four through design, build, and testing on an eight-month schedule.</li>
           <li>Designed impact-resistant mechanisms, implemented RF control systems, and executed welding, wiring, and electro-mechanical assembly.</li>
         </ul>
@@ -380,7 +387,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
           <div class="impact">A safety-gated LLM agent helping engineers run a robotic chemistry lab</div>
           <p>An AI assistant for a robotic high-throughput chemistry lab: read-only by default, with every real-world action gated behind five safety checks — registered policy, engineer role, passing preflight, exact confirmation token, and audit record. Engineer-reviewed incident root-causes feed back into automatic preflight checks, and answers cite hash-verifiable evidence artifacts. 42 documented capabilities and 130+ automated tests behind an enforced coverage gate, under strict typing. Backed by an auditable knowledge pipeline that ingests engineering docs with preview-first, human-approved promotion.</p>
           <div class="chips"><span class="chip">LLM Agents</span><span class="chip">Agentic Workflows</span><span class="chip">Knowledge Pipelines</span><span class="chip">Python</span><span class="chip">mypy --strict</span><span class="chip">SQLite FTS5</span><span class="chip">CI/CD</span></div>
-          <div class="links"><a href="mailto:chuan120@alumni.jh.edu?subject=AI%20Operations%20Agent">Ask me about it</a></div>
+          <div class="links"><a href="mailto:chuan120@alumni.jh.edu?subject=AI%20Operations%20Agent" aria-label="Email me about the AI Operations Agent">Ask me about it</a></div>
         </div>
       </div>
 
@@ -394,7 +401,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
           <div class="impact">A personal, pip-installable framework for agent context across projects</div>
           <p>A CLI that installs a memory scaffold into any codebase: incremental workspace digests (unchanged files never re-read), cross-project weekly reports and due-date attention lists, and cross-project lesson promotion through a fail-closed privacy validator — rejecting emails, URLs, absolute paths, and credential terms. Hardened for daily use: per-workspace operation locks, bounded document extraction, rotating audit logs, one-command rollback.</p>
           <div class="chips"><span class="chip">Python</span><span class="chip">CLI Design</span><span class="chip">pytest</span><span class="chip">Privacy Validation</span><span class="chip">Docs/OCR Extraction</span></div>
-          <div class="links"><a href="mailto:chuan120@alumni.jh.edu?subject=Agent%20Workbench">Ask me about it</a></div>
+          <div class="links"><a href="mailto:chuan120@alumni.jh.edu?subject=Agent%20Workbench" aria-label="Email me about Agent Workbench">Ask me about it</a></div>
         </div>
       </div>
 
@@ -408,7 +415,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
           <div class="impact">Shift-aware chat-ops reminders that re-ping until someone says OK</div>
           <p>A scheduled chat-ops service reminding lab staff of recurring facility duties — AC toggles every two hours, nightly charging and tidy-up — with shift-aware @mentions, interactive cards, and emoji-acknowledgment polling that automatically re-sends until confirmed. Dockerized for 24/7 cloud hosting.</p>
           <div class="chips"><span class="chip">Python</span><span class="chip">FastAPI</span><span class="chip">APScheduler</span><span class="chip">Docker</span><span class="chip">Render</span></div>
-          <div class="links"><a href="mailto:chuan120@alumni.jh.edu?subject=Lab%20Duty%20Reminder%20Bot">Ask me about it</a></div>
+          <div class="links"><a href="mailto:chuan120@alumni.jh.edu?subject=Lab%20Duty%20Reminder%20Bot" aria-label="Email me about the Lab Duty Reminder Bot">Ask me about it</a></div>
         </div>
       </div>
 
@@ -422,7 +429,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
           <div class="impact">Replaced a stereo rig with a single camera — higher precision, less hardware</div>
           <p>Contour-based geometric modeling + least-squares regression to estimate 5-DoF tool-tip pose error, with a MuJoCo simulation framework validating accuracy across randomized pose-error cases. Built for solid-dispensing workflows at XtalPi.</p>
           <div class="chips"><span class="chip">MuJoCo</span><span class="chip">OpenCV</span><span class="chip">Python</span><span class="chip">Least-Squares</span></div>
-          <div class="links"><a href="mailto:chuan120@alumni.jh.edu?subject=Monocular%20Calibration">Ask me about it</a></div>
+          <div class="links"><a href="mailto:chuan120@alumni.jh.edu?subject=Monocular%20Calibration" aria-label="Email me about monocular calibration">Ask me about it</a></div>
         </div>
       </div>
 
@@ -450,7 +457,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
           <div class="impact">Hand-eye calibration (Park–Martin) + 73% faster RRT planning</div>
           <p>Vision-guided manipulation with hand-eye calibration to 0.2 mm end-effector error; control time cut by 50%+ and RRT planning efficiency up 73% via control tuning and a C++ k-d tree implementation.</p>
           <div class="chips"><span class="chip">ROS</span><span class="chip">MATLAB</span><span class="chip">C++</span><span class="chip">RRT</span></div>
-          <div class="links"><a href="mailto:chuan120@alumni.jh.edu?subject=Sensor-Based%20UR5%20Manipulation">Ask me about it</a></div>
+          <div class="links"><a href="mailto:chuan120@alumni.jh.edu?subject=Sensor-Based%20UR5%20Manipulation" aria-label="Email me about sensor-based UR5 manipulation">Ask me about it</a></div>
         </div>
       </div>
 
@@ -608,6 +615,8 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
   </div>
 </section>
 
+</main>
+
 <footer>
   <div class="footer-inner">
     <div>© 2026 Ching-Yang (Austin) Huang</div>
@@ -616,6 +625,14 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
 </footer>
 
 <script>
+// Announce new-tab links to assistive tech
+document.querySelectorAll('a[target="_blank"]').forEach(a=>{
+  const s = document.createElement('span');
+  s.className = 'sr-only';
+  s.textContent = ' (opens in new tab)';
+  a.append(s);
+});
+
 const io = new IntersectionObserver((entries)=>{
   for (const e of entries) if (e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); }
 },{threshold:.12});
