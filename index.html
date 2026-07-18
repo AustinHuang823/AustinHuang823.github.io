@@ -25,11 +25,13 @@
   --maxw:1100px; --radius:14px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
 body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
 h1,h2,h3,.stat-num,.logo{font-family:'Space Grotesk','Inter',sans-serif}
+h2,h3,h4{line-height:1.2}
 a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline;text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 img,video{max-width:100%;display:block}
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
 
@@ -46,7 +48,12 @@ nav{position:sticky;top:0;z-index:50;background:rgba(10,14,20,.82);backdrop-filt
 .btn:hover{text-decoration:none;border-color:var(--accent-dim);transform:translateY(-1px)}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:#04211b}
 .btn.primary:hover{background:#5cf0d3}
-.nav-links .btn{padding:7px 14px}
+.nav-cta{padding:7px 14px}
+.nav-toggle{display:none;width:40px;height:40px;border-radius:10px;border:1px solid var(--border2);background:none;color:var(--text);cursor:pointer;align-items:center;justify-content:center;padding:0;flex:none}
+.nav-toggle svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+.nav-toggle .ic-close{display:none}
+.nav-toggle[aria-expanded="true"] .ic-close{display:block}
+.nav-toggle[aria-expanded="true"] .ic-burger{display:none}
 
 /* ---------- hero ---------- */
 header{position:relative;overflow:hidden;border-bottom:1px solid var(--border);background:
@@ -56,7 +63,7 @@ header::before{content:"";position:absolute;inset:0;background-image:
   linear-gradient(rgba(148,165,186,.05) 1px, transparent 1px),
   linear-gradient(90deg, rgba(148,165,186,.05) 1px, transparent 1px);
   background-size:44px 44px;mask-image:radial-gradient(ellipse 70% 80% at 50% 0%, #000 30%, transparent 75%)}
-.hero{position:relative;padding:96px 0 84px}
+.hero{position:relative;padding-top:96px;padding-bottom:84px}
 .eyebrow{color:var(--accent);font-weight:600;font-size:13.5px;letter-spacing:2.2px;text-transform:uppercase;margin-bottom:18px}
 .hero h1{font-size:clamp(40px,6.5vw,64px);font-weight:700;letter-spacing:-1px;line-height:1.08;margin-bottom:8px}
 .hero .alt-name{color:var(--faint);font-size:15px;margin-bottom:26px}
@@ -115,9 +122,16 @@ section{padding:88px 0}
 .card .media{position:relative;aspect-ratio:16/9;background:#0c1119;overflow:hidden}
 .card .media video,.card .media img{width:100%;height:100%;object-fit:cover}
 .card .media.contain video,.card .media.contain img{object-fit:contain}
-.card .media .corner-badge{position:absolute;top:12px;left:12px;z-index:2}
+.card .media .corner-badge{position:absolute;top:12px;left:12px;z-index:2;background:rgba(10,14,20,.88);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.vid-toggle{position:absolute;right:10px;bottom:10px;z-index:3;width:36px;height:36px;border-radius:50%;border:1px solid var(--border2);background:rgba(10,14,20,.78);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;transition:border-color .18s ease}
+.vid-toggle:hover{border-color:var(--accent-dim)}
+.vid-toggle svg{width:13px;height:13px;fill:currentColor}
+.vid-toggle .ic-pause{display:none}
+.vid-toggle.playing .ic-pause{display:block}
+.vid-toggle.playing .ic-play{display:none}
 .card-body{padding:22px 24px 24px;display:flex;flex-direction:column;gap:11px;flex:1}
 .card h3{font-size:18.5px;font-weight:600;line-height:1.35}
+.card-meta{color:var(--faint);font-size:11.5px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;margin-bottom:-4px}
 .card .impact{color:var(--accent);font-size:13.5px;font-weight:600;letter-spacing:.2px}
 .card p{color:var(--muted);font-size:14.5px}
 .card .chips{margin-top:auto;padding-top:6px}
@@ -130,7 +144,7 @@ section{padding:88px 0}
 .no-media .big-metric .n{font-family:'Space Grotesk';font-size:38px;font-weight:700;color:var(--accent)}
 .no-media .big-metric .l{color:var(--faint);font-size:12.5px;letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
 .card.wide{grid-column:1 / -1}
-.card.wide .media{aspect-ratio:auto;max-height:420px}
+.card.wide .media{aspect-ratio:16/9;max-height:none}
 
 /* ---------- skills ---------- */
 .skill-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
@@ -170,8 +184,12 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
   .stat-num{font-size:24px;white-space:normal}
   .proj-grid,.skill-grid,.edu-row{grid-template-columns:1fr}
   .about-flex{flex-direction:column}
-  .nav-links a:not(.btn){display:none}
-  .hero{padding:72px 0 64px}
+  .nav-links{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;align-items:stretch;gap:2px;margin:0;background:rgba(10,14,20,.97);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:8px 24px 16px}
+  .nav-links.open{display:flex}
+  .nav-links a{padding:12px 0;font-size:16px}
+  .nav-cta{margin-left:auto}
+  .nav-toggle{display:flex}
+  .hero{padding-top:72px;padding-bottom:64px}
 }
 </style>
 </head>
@@ -180,13 +198,18 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
 <nav>
   <div class="nav-inner">
     <a class="logo" href="#">austin<span>.</span>huang</a>
-    <div class="nav-links">
+    <div class="nav-links" id="nav-menu">
       <a href="#experience">Experience</a>
       <a href="#projects">Projects</a>
       <a href="#skills">Skills</a>
       <a href="#about">About</a>
-      <a class="btn" href="assets/docs/Resume_AustinHuang.pdf" target="_blank" rel="noopener">Resume ↓</a>
+      <a href="#contact">Contact</a>
     </div>
+    <a class="btn nav-cta" href="assets/docs/Resume_AustinHuang.pdf" target="_blank" rel="noopener">Resume ↓</a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav-menu" aria-label="Open menu">
+      <svg class="ic-burger" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="ic-close" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
   </div>
 </nav>
 
@@ -202,7 +225,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
       <div class="icon-links">
         <a href="https://github.com/AustinHuang823" target="_blank" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg></a>
         <a href="https://www.linkedin.com/in/chingyangh/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.55C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.72C24 .77 23.2 0 22.22 0z"/></svg></a>
-        <a href="mailto:chuan120@alumni.jh.edu" aria-label="Email"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+        <a href="mailto:chuan120@alumni.jh.edu?subject=Hello%20from%20your%20portfolio" aria-label="Email"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
       </div>
     </div>
   </div>
@@ -305,6 +328,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
           <img src="assets/img/VRPelviSim.jpeg" alt="VRPelviSim virtual operating room environment" loading="lazy">
         </div>
         <div class="card-body">
+          <div class="card-meta">JHU Research · 2024</div>
           <h3>VRPelviSim — VR Training for Fluoroscopic Surgery</h3>
           <div class="impact">Virtual operating room with simulated C-arm &amp; realistic DRR X-ray imaging</div>
           <p>Multi-user VR environment emulating real ORs for surgical training and clinical data collection — patient models from real CT data, DeepDRR-powered radiographs, and scalable server deployment. Builds on Killeen et al.'s cross-training research.</p>
@@ -318,11 +342,12 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
           <div class="big-metric"><div class="n">5 gates</div><div class="l">between the agent and real hardware</div></div>
         </div>
         <div class="card-body">
+          <div class="card-meta">XtalPi · In production</div>
           <h3>AI Operations Agent for Robotic Automation</h3>
           <div class="impact">A safety-gated LLM agent helping engineers run a robotic chemistry lab</div>
           <p>An AI assistant for a robotic high-throughput chemistry lab: read-only by default, with every real-world action gated behind five safety checks — registered policy, engineer role, passing preflight, exact confirmation token, and audit record. Engineer-reviewed incident root-causes feed back into automatic preflight checks, and answers cite hash-verifiable evidence artifacts. 42 documented capabilities and 130+ automated tests behind an enforced coverage gate, under strict typing. Backed by an auditable knowledge pipeline that ingests engineering docs with preview-first, human-approved promotion.</p>
           <div class="chips"><span class="chip">LLM Agents</span><span class="chip">Agentic Workflows</span><span class="chip">Knowledge Pipelines</span><span class="chip">Python</span><span class="chip">mypy --strict</span><span class="chip">SQLite FTS5</span><span class="chip">CI/CD</span></div>
-          <div class="links"><a href="mailto:chuan120@alumni.jh.edu">Ask me about it</a></div>
+          <div class="links"><a href="mailto:chuan120@alumni.jh.edu?subject=AI%20Operations%20Agent">Ask me about it</a></div>
         </div>
       </div>
 
@@ -331,11 +356,12 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
           <div class="big-metric"><div class="n">3×</div><div class="l">live workspaces, synchronized memory</div></div>
         </div>
         <div class="card-body">
+          <div class="card-meta">Personal build</div>
           <h3>Agent Workbench — Memory for AI Coding Agents</h3>
           <div class="impact">A personal, pip-installable framework for agent context across projects</div>
           <p>A CLI that installs a memory scaffold into any codebase: incremental workspace digests (unchanged files never re-read), cross-project weekly reports and due-date attention lists, and cross-project lesson promotion through a fail-closed privacy validator — rejecting emails, URLs, absolute paths, and credential terms. Hardened for daily use: per-workspace operation locks, bounded document extraction, rotating audit logs, one-command rollback.</p>
           <div class="chips"><span class="chip">Python</span><span class="chip">CLI Design</span><span class="chip">pytest</span><span class="chip">Privacy Validation</span><span class="chip">Docs/OCR Extraction</span></div>
-          <div class="links"><a href="mailto:chuan120@alumni.jh.edu">Ask me about it</a></div>
+          <div class="links"><a href="mailto:chuan120@alumni.jh.edu?subject=Agent%20Workbench">Ask me about it</a></div>
         </div>
       </div>
 
@@ -344,11 +370,12 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
           <div class="big-metric"><div class="n">every 2 h</div><div class="l">AC toggles + nightly duties, ack-tracked</div></div>
         </div>
         <div class="card-body">
+          <div class="card-meta">Personal build</div>
           <h3>Lab Duty Reminder Bot</h3>
           <div class="impact">Shift-aware chat-ops reminders that re-ping until someone says OK</div>
           <p>A scheduled chat-ops service reminding lab staff of recurring facility duties — AC toggles every two hours, nightly charging and tidy-up — with shift-aware @mentions, interactive cards, and emoji-acknowledgment polling that automatically re-sends until confirmed. Dockerized for 24/7 cloud hosting.</p>
           <div class="chips"><span class="chip">Python</span><span class="chip">FastAPI</span><span class="chip">APScheduler</span><span class="chip">Docker</span><span class="chip">Render</span></div>
-          <div class="links"><a href="mailto:chuan120@alumni.jh.edu">Ask me about it</a></div>
+          <div class="links"><a href="mailto:chuan120@alumni.jh.edu?subject=Lab%20Duty%20Reminder%20Bot">Ask me about it</a></div>
         </div>
       </div>
 
@@ -357,19 +384,21 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
           <div class="big-metric"><div class="n">5-DoF</div><div class="l">tool-tip pose correction, one camera</div></div>
         </div>
         <div class="card-body">
+          <div class="card-meta">XtalPi · In production</div>
           <h3>Monocular Calibration for Robot End-Effectors</h3>
           <div class="impact">Replaced a stereo rig with a single camera — higher precision, less hardware</div>
           <p>Contour-based geometric modeling + least-squares regression to estimate 5-DoF tool-tip pose error, with a MuJoCo simulation framework validating accuracy across randomized pose-error cases. Built for solid-dispensing workflows at XtalPi.</p>
           <div class="chips"><span class="chip">MuJoCo</span><span class="chip">OpenCV</span><span class="chip">Python</span><span class="chip">Least-Squares</span></div>
-          <div class="links"><a href="mailto:chuan120@alumni.jh.edu">Ask me about it</a></div>
+          <div class="links"><a href="mailto:chuan120@alumni.jh.edu?subject=Monocular%20Calibration">Ask me about it</a></div>
         </div>
       </div>
 
       <div class="card reveal">
         <div class="media contain">
-          <video autoplay muted loop playsinline preload="metadata" poster="assets/media/rdkdc_imagedrawing_poster.jpg" src="assets/media/rdkdc_imagedrawing.mp4" aria-label="UR5 robot arm drawing the Johns Hopkins logo"></video>
+          <video muted loop playsinline preload="none" poster="assets/media/rdkdc_imagedrawing_poster.jpg" src="assets/media/rdkdc_imagedrawing.mp4" aria-label="UR5 robot arm drawing the Johns Hopkins logo"></video>
         </div>
         <div class="card-body">
+          <div class="card-meta">JHU Coursework · 2022</div>
           <h3>UR5 Robot Arm — Control &amp; Image Drawing</h3>
           <div class="impact">Inverse kinematics, Jacobian &amp; resolved-rate control — drawing the JHU logo</div>
           <p>Precision pick-and-place and trajectory control on a real UR5, handling singularities, collision constraints, and workspace limits. Finale: the arm hand-draws the Johns Hopkins logo.</p>
@@ -383,19 +412,21 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
           <div class="big-metric"><div class="n">0.2 mm</div><div class="l">end-effector error</div></div>
         </div>
         <div class="card-body">
+          <div class="card-meta">JHU Coursework · 2022</div>
           <h3>Sensor-Based UR5 Manipulation</h3>
           <div class="impact">Hand-eye calibration (Park–Martin) + 73% faster RRT planning</div>
           <p>Vision-guided manipulation with hand-eye calibration to 0.2 mm end-effector error; control time cut by 50%+ and RRT planning efficiency up 73% via control tuning and a C++ k-d tree implementation.</p>
           <div class="chips"><span class="chip">ROS</span><span class="chip">MATLAB</span><span class="chip">C++</span><span class="chip">RRT</span></div>
-          <div class="links"><a href="mailto:chuan120@alumni.jh.edu">Ask me about it</a></div>
+          <div class="links"><a href="mailto:chuan120@alumni.jh.edu?subject=Sensor-Based%20UR5%20Manipulation">Ask me about it</a></div>
         </div>
       </div>
 
       <div class="card reveal">
         <div class="media">
-          <video autoplay muted loop playsinline preload="metadata" poster="assets/media/perception_demo_poster.jpg" src="assets/media/perception_demo.mp4" aria-label="HoloLens radar mini-map tracking objects outside the field of view"></video>
+          <video muted loop playsinline preload="none" poster="assets/media/perception_demo_poster.jpg" src="assets/media/perception_demo.mp4" aria-label="HoloLens radar mini-map tracking objects outside the field of view"></video>
         </div>
         <div class="card-body">
+          <div class="card-meta">JHU Coursework</div>
           <h3>Extending Human Perception with HoloLens 2</h3>
           <div class="impact">Radar mini-map UI for objects beyond the headset's field of view</div>
           <p>Unlocks HoloLens 2 Research Mode to tap all four environmental grayscale cameras, tracking ArUco-marked objects in real time and surfacing their position and height on a radar-style AR mini-map — inside and outside the native field of view.</p>
@@ -406,9 +437,10 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
 
       <div class="card reveal">
         <div class="media">
-          <video autoplay muted loop playsinline preload="metadata" poster="assets/media/segmentation_poster.jpg" src="assets/media/segmentation.mp4" aria-label="Semantic segmentation inference improving across training epochs"></video>
+          <video muted loop playsinline preload="none" poster="assets/media/segmentation_poster.jpg" src="assets/media/segmentation.mp4" aria-label="Semantic segmentation inference improving across training epochs"></video>
         </div>
         <div class="card-body">
+          <div class="card-meta">JHU Coursework</div>
           <h3>Semantic Segmentation with Transfer Learning</h3>
           <div class="impact">Pixel accuracy 66% → 81%, mIoU 60% → 78%</div>
           <p>Transfer learning for autonomous-driving segmentation with DeepLabv3+ (MobileNet backbone): pre-trained on Cityscapes, fine-tuned on a self-collected JHUStreet dataset — with clear gains on cars and traffic signs in urban scenes.</p>
@@ -422,6 +454,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
           <div class="big-metric"><div class="n">±CT</div><div class="l">frame-accurate instrument tracking</div></div>
         </div>
         <div class="card-body">
+          <div class="card-meta">JHU Coursework</div>
           <h3>Stereotactic Navigation — Calibration &amp; Distortion Correction</h3>
           <div class="impact">Bernstein-polynomial distortion correction for surgical navigation</div>
           <p>Mathematical models for precise tracking: 3D point-cloud registration, pivot calibration, and distortion correction — pinpointing instrument tips relative to CT frames.</p>
@@ -435,6 +468,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
           <div class="big-metric"><div class="n">2D → 3D</div><div class="l">camera poses + geometry from video</div></div>
         </div>
         <div class="card-body">
+          <div class="card-meta">JHU Coursework</div>
           <h3>Structure-from-Motion 3D Reconstruction</h3>
           <div class="impact">Dense 3D models rebuilt from monocular video</div>
           <p>A Structure-from-Motion pipeline recovering camera trajectories and 3D geometry from image sequences — feature matching, pose estimation, and reconstruction from ordinary video content.</p>
@@ -448,6 +482,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
           <div class="big-metric"><div class="n">ICP</div><div class="l">covariance-tree accelerated registration</div></div>
         </div>
         <div class="card-body">
+          <div class="card-meta">JHU Coursework</div>
           <h3>Iterative Closest Point for 3D Surface Matching</h3>
           <div class="impact">Optimized registration for computer-integrated surgery</div>
           <p>ICP variants for high-accuracy 3D surface registration: brute-force nearest-neighbor search versus covariance-tree acceleration, evaluated for accuracy and runtime.</p>
@@ -459,9 +494,10 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
       <div class="card reveal wide">
         <div class="media">
           <span class="corner-badge badge gold">As seen on TV</span>
-          <video autoplay muted loop playsinline preload="metadata" poster="assets/media/clashbots_poster.jpg" src="assets/media/clashbots.mp4" aria-label="Clash Bots combat robot competing on the TV show"></video>
+          <video muted loop playsinline preload="none" poster="assets/media/clashbots_poster.jpg" src="assets/media/clashbots.mp4" aria-label="Clash Bots combat robot competing on the TV show"></video>
         </div>
         <div class="card-body">
+          <div class="card-meta">iQIYI TV · 2017–18</div>
           <h3>Clash Bots — 110 kg Combat Robot</h3>
           <div class="impact">Built for a TV series with 1B+ views worldwide</div>
           <p>Led a four-person team building a heavyweight battle robot in eight months: impact-resistant mechanism design, RF control, welding, and full electro-mechanical integration.</p>
@@ -532,7 +568,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
     <h2>Let's build something that works.</h2>
     <p>Open to conversations about robotics systems, perception, simulation, and AI-agent tooling for real-world machines.</p>
     <div class="cta-row" style="justify-content:center">
-      <a class="btn primary" href="mailto:chuan120@alumni.jh.edu">chuan120@alumni.jh.edu</a>
+      <a class="btn primary" href="mailto:chuan120@alumni.jh.edu?subject=Hello%20from%20your%20portfolio">chuan120@alumni.jh.edu</a>
       <a class="btn" href="https://www.linkedin.com/in/chingyangh/" target="_blank" rel="noopener">LinkedIn</a>
       <a class="btn" href="https://github.com/AustinHuang823" target="_blank" rel="noopener">GitHub</a>
     </div>
@@ -552,14 +588,43 @@ const io = new IntersectionObserver((entries)=>{
 },{threshold:.12});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
-// Play videos only while visible (also covers browsers that ignore the autoplay attribute)
+// Mobile nav
+const navToggle = document.querySelector('.nav-toggle');
+const navMenu = document.getElementById('nav-menu');
+function closeMenu(){ navMenu.classList.remove('open'); navToggle.setAttribute('aria-expanded','false'); navToggle.setAttribute('aria-label','Open menu'); }
+navToggle.addEventListener('click', ()=>{
+  const open = navMenu.classList.toggle('open');
+  navToggle.setAttribute('aria-expanded', String(open));
+  navToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+});
+navMenu.addEventListener('click', e=>{ if (e.target.closest('a')) closeMenu(); });
+document.addEventListener('keydown', e=>{ if (e.key === 'Escape' && navMenu.classList.contains('open')){ closeMenu(); navToggle.focus(); } });
+
+// Play videos only while visible; respect reduced motion, data saver, and manual pauses
+const noMotion = matchMedia('(prefers-reduced-motion: reduce)');
+const saveData = navigator.connection && navigator.connection.saveData;
+const userPaused = new WeakSet(), userStarted = new WeakSet();
 const vio = new IntersectionObserver((entries)=>{
   for (const e of entries){
-    if (e.isIntersecting) e.target.play().catch(()=>{});
-    else e.target.pause();
+    const v = e.target;
+    if (e.isIntersecting && !userPaused.has(v) && (!(noMotion.matches || saveData) || userStarted.has(v))) v.play().catch(()=>{});
+    else v.pause();
   }
 },{threshold:.2});
-document.querySelectorAll('video').forEach(v=>vio.observe(v));
+document.querySelectorAll('video').forEach(v=>{
+  vio.observe(v);
+  const btn = document.createElement('button');
+  btn.className = 'vid-toggle';
+  btn.setAttribute('aria-label','Play video');
+  btn.innerHTML = '<svg class="ic-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="ic-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
+  btn.addEventListener('click', ()=>{
+    if (v.paused){ userPaused.delete(v); userStarted.add(v); v.play().catch(()=>{}); }
+    else { userPaused.add(v); v.pause(); }
+  });
+  v.addEventListener('play', ()=>{ btn.classList.add('playing'); btn.setAttribute('aria-label','Pause video'); });
+  v.addEventListener('pause', ()=>{ btn.classList.remove('playing'); btn.setAttribute('aria-label','Play video'); });
+  v.parentElement.appendChild(btn);
+});
 </script>
 </body>
 </html>
