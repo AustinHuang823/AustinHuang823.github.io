@@ -392,13 +392,13 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
     </div>
     <figure class="hero-media reveal">
       <div class="frame">
-        <canvas id="ik-canvas" role="img" aria-label="A two-link robot arm animation that follows your cursor and hand-writes text using inverse kinematics"></canvas>
+        <canvas id="ik-canvas" role="img" aria-label="A three-link robot arm animation that follows your cursor and hand-writes text in cursive using inverse kinematics"></canvas>
       </div>
       <figcaption>
-        <span>Analytic inverse kinematics, live — follow it with your cursor, or give it something to write. It drew the JHU logo on a real UR5, too — <a href="#projects">see Projects</a>.</span>
+        <span>Live inverse kinematics — three joints — follow it with your cursor, or give it something to write. It drew the JHU logo on a real UR5, too — <a href="#projects">see Projects</a>.</span>
         <form class="arm-form" autocomplete="off">
           <label class="sr-only" for="arm-text">Text for the robot arm to write — letters, numbers, spaces, up to 8 characters</label>
-          <input id="arm-text" maxlength="8" placeholder="AUSTIN" pattern="[A-Za-z0-9 ]*" title="Letters, numbers, and spaces only">
+          <input id="arm-text" maxlength="8" placeholder="austin" pattern="[A-Za-z0-9 ]*" title="Letters, numbers, and spaces only">
           <button class="arm-go" type="submit">Write it</button>
         </form>
       </figcaption>
@@ -1036,53 +1036,71 @@ document.querySelectorAll('video').forEach(v=>{
     return { accent:v('--accent'), accentRgb:v('--accent-rgb'), border2:v('--border2'), card2:v('--card2'), armFill:v('--arm-fill'), jointFill:v('--joint-fill') };
   }
   let C = readC();
-  let W, H, L1, L2, dead = true;
-  let a1 = -Math.PI/2.3, a2 = 0.9;
+  let W, H, dead = true;
+  let J = [], L = [], chase = null;
   let target = null, idleT = 0;
   const trail = [];
 
   // --- handwriting: single-stroke glyphs on a 0..1 grid (y down), traced as IK waypoints ---
-  const GLYPHS = {
-    A:[[0,1,.35,0,.7,1],[.14,.62,.56,.62]],
-    B:[[0,0,0,1],[0,0,.6,.06,.66,.22,.55,.45,0,.5],[0,.5,.62,.56,.7,.74,.6,.94,0,1]],
-    C:[[.7,.12,.5,0,.2,0,0,.2,0,.8,.2,1,.5,1,.7,.88]],
-    D:[[0,0,0,1],[0,0,.5,.05,.7,.3,.7,.7,.5,.95,0,1]],
-    E:[[.7,0,0,0,0,1,.7,1],[0,.5,.5,.5]],
-    F:[[.7,0,0,0,0,1],[0,.5,.5,.5]],
-    G:[[.7,.12,.45,0,.2,0,0,.2,0,.8,.2,1,.5,1,.7,.85,.7,.55,.4,.55]],
-    H:[[0,0,0,1],[.7,0,.7,1],[0,.5,.7,.5]],
-    I:[[.35,0,.35,1],[.1,0,.6,0],[.1,1,.6,1]],
-    J:[[.6,0,.6,.8,.45,1,.15,1,0,.82]],
-    K:[[0,0,0,1],[.65,0,0,.55],[.22,.4,.7,1]],
-    L:[[0,0,0,1,.65,1]],
-    M:[[0,1,0,0,.35,.55,.7,0,.7,1]],
-    N:[[0,1,0,0,.7,1,.7,0]],
-    O:[[.2,0,.5,0,.7,.2,.7,.8,.5,1,.2,1,0,.8,0,.2,.2,0]],
-    P:[[0,1,0,0,.55,.04,.7,.22,.55,.45,0,.5]],
-    Q:[[.2,0,.5,0,.7,.2,.7,.8,.5,1,.2,1,0,.8,0,.2,.2,0],[.45,.7,.75,1]],
-    R:[[0,1,0,0,.55,.04,.7,.22,.55,.45,0,.5],[.3,.5,.7,1]],
-    S:[[.7,.12,.5,0,.2,0,0,.15,.1,.4,.6,.6,.7,.82,.5,1,.15,1,0,.88]],
-    T:[[.35,0,.35,1],[0,0,.7,0]],
-    U:[[0,0,0,.8,.2,1,.5,1,.7,.8,.7,0]],
-    V:[[0,0,.35,1,.7,0]],
-    W:[[0,0,.18,1,.35,.45,.52,1,.7,0]],
-    X:[[0,0,.7,1],[.7,0,0,1]],
-    Y:[[0,0,.35,.5,.7,0],[.35,.5,.35,1]],
-    Z:[[0,0,.7,0,0,1,.7,1]],
-    '0':[[.2,0,.5,0,.7,.2,.7,.8,.5,1,.2,1,0,.8,0,.2,.2,0]],
-    '1':[[.15,.15,.38,0,.38,1]],
-    '2':[[0,.15,.2,0,.5,0,.7,.18,.65,.4,0,1,.7,1]],
-    '3':[[0,.1,.25,0,.55,0,.68,.18,.55,.42,.3,.48],[.3,.48,.6,.55,.7,.75,.55,.95,.2,1,0,.9]],
-    '4':[[.55,1,.55,0,0,.65,.7,.65]],
-    '5':[[.65,0,.1,0,.05,.45,.4,.4,.65,.55,.68,.8,.5,1,.12,1,0,.88]],
-    '6':[[.6,.05,.35,0,.1,.15,0,.5,0,.8,.2,1,.5,1,.68,.82,.6,.58,.35,.5,.05,.6]],
-    '7':[[0,0,.7,0,.25,1]],
-    '8':[[.35,.48,.12,.42,.05,.2,.2,0,.5,0,.65,.2,.58,.42,.35,.48],[.35,.48,.1,.56,0,.78,.18,1,.52,1,.7,.78,.6,.56,.35,.48]],
-    '9':[[.65,.4,.35,.5,.1,.42,.02,.18,.2,0,.5,0,.68,.18,.68,.5,.6,.85,.35,1,.1,.95]],
-    ' ':[]
-  };
-  let word = 'AUSTIN';
-  let mode = 'idle';           // idle | follow | write | hold | fade
+  const CURSIVE = {
+  a:{w:.40,p:[[0,.72],[.18,.45],[.26,.40],[.14,.37],[.04,.46],[.02,.60],[.09,.70],[.20,.71],[.26,.58],[.26,.44],[.28,.62],[.33,.72],[.40,.66]]},
+  b:{w:.36,p:[[0,.72],[.10,.48],[.15,.18],[.16,.05],[.11,.05],[.08,.24],[.06,.52],[.07,.68],[.14,.72],[.23,.66],[.26,.54],[.21,.46],[.28,.48],[.36,.54]]},
+  c:{w:.32,p:[[0,.72],[.18,.48],[.24,.40],[.13,.37],[.04,.46],[.02,.60],[.08,.70],[.20,.72],[.32,.66]]},
+  d:{w:.42,p:[[0,.72],[.18,.45],[.24,.40],[.13,.37],[.04,.46],[.02,.60],[.08,.70],[.19,.71],[.25,.58],[.26,.34],[.27,.12],[.28,.34],[.30,.60],[.34,.72],[.42,.66]]},
+  e:{w:.30,p:[[0,.72],[.13,.52],[.19,.42],[.13,.36],[.05,.44],[.03,.58],[.09,.70],[.20,.71],[.30,.65]]},
+  f:{w:.30,p:[[0,.72],[.10,.48],[.15,.18],[.16,.05],[.11,.04],[.08,.24],[.07,.52],[.08,.78],[.07,.95],[.12,.99],[.16,.86],[.15,.72],[.22,.66],[.30,.68]]},
+  g:{w:.40,p:[[0,.72],[.18,.45],[.24,.40],[.13,.37],[.04,.46],[.02,.60],[.09,.70],[.19,.70],[.25,.58],[.26,.44],[.27,.66],[.28,.88],[.24,1.0],[.16,.97],[.19,.84],[.30,.72],[.40,.66]]},
+  h:{w:.36,p:[[0,.72],[.08,.45],[.13,.15],[.14,.04],[.09,.06],[.07,.32],[.06,.62],[.07,.72],[.11,.54],[.18,.44],[.24,.49],[.26,.60],[.28,.72],[.36,.66]]},
+  i:{w:.22,p:[[0,.72],[.09,.50],[.13,.42],[.14,.56],[.15,.69],[.22,.68]],d:[[[.13,.30],[.14,.27]]]},
+  j:{w:.26,p:[[0,.72],[.09,.50],[.13,.42],[.14,.62],[.15,.85],[.12,.99],[.05,.95],[.08,.83],[.18,.70],[.26,.66]],d:[[[.13,.30],[.14,.27]]]},
+  k:{w:.38,p:[[0,.72],[.08,.45],[.13,.15],[.14,.04],[.09,.06],[.07,.35],[.06,.62],[.07,.72],[.12,.58],[.19,.47],[.23,.50],[.17,.57],[.25,.63],[.30,.71],[.38,.66]]},
+  l:{w:.28,p:[[0,.72],[.09,.45],[.14,.15],[.15,.04],[.10,.05],[.07,.30],[.06,.60],[.10,.71],[.20,.70],[.28,.65]]},
+  m:{w:.46,p:[[0,.72],[.06,.52],[.10,.44],[.12,.55],[.13,.70],[.16,.52],[.21,.44],[.24,.53],[.25,.69],[.28,.52],[.33,.44],[.37,.54],[.38,.68],[.46,.66]]},
+  n:{w:.34,p:[[0,.72],[.06,.52],[.10,.44],[.12,.56],[.13,.70],[.16,.52],[.21,.44],[.25,.54],[.26,.68],[.34,.66]]},
+  o:{w:.34,p:[[0,.72],[.14,.46],[.20,.40],[.10,.37],[.03,.47],[.02,.60],[.08,.70],[.17,.70],[.24,.62],[.26,.50],[.21,.43],[.28,.48],[.34,.58]]},
+  p:{w:.36,p:[[0,.72],[.08,.50],[.12,.42],[.13,.62],[.13,.85],[.12,.99],[.08,.97],[.09,.78],[.10,.58],[.15,.46],[.23,.45],[.26,.56],[.21,.68],[.15,.69],[.25,.72],[.36,.66]]},
+  q:{w:.42,p:[[0,.72],[.18,.45],[.24,.40],[.13,.37],[.04,.46],[.02,.60],[.08,.70],[.19,.70],[.25,.58],[.26,.44],[.27,.66],[.27,.88],[.31,1.0],[.37,.94],[.33,.82],[.31,.74],[.42,.64]]},
+  r:{w:.34,p:[[0,.72],[.09,.48],[.13,.40],[.14,.52],[.19,.42],[.25,.40],[.26,.48],[.25,.58],[.28,.68],[.34,.66]]},
+  s:{w:.30,p:[[0,.72],[.13,.48],[.18,.40],[.11,.39],[.06,.48],[.11,.58],[.16,.66],[.12,.72],[.20,.72],[.30,.67]]},
+  t:{w:.28,p:[[0,.72],[.09,.45],[.13,.22],[.14,.38],[.15,.60],[.16,.70],[.28,.66]],d:[[[.03,.32],[.24,.30]]]},
+  u:{w:.36,p:[[0,.72],[.08,.48],[.11,.42],[.12,.58],[.13,.70],[.18,.71],[.24,.60],[.25,.44],[.26,.60],[.28,.70],[.36,.66]]},
+  v:{w:.34,p:[[0,.72],[.06,.52],[.10,.42],[.10,.42],[.13,.58],[.16,.68],[.21,.60],[.24,.48],[.24,.48],[.29,.46],[.34,.52]]},
+  w:{w:.44,p:[[0,.72],[.05,.52],[.08,.42],[.08,.42],[.10,.55],[.12,.68],[.15,.71],[.18,.60],[.20,.42],[.20,.42],[.22,.55],[.24,.68],[.27,.71],[.31,.58],[.34,.42],[.34,.42],[.39,.44],[.44,.52]]},
+  x:{w:.34,p:[[0,.72],[.10,.50],[.16,.44],[.23,.56],[.28,.70],[.34,.66]],d:[[[.28,.46],[.06,.70]]]},
+  y:{w:.40,p:[[0,.72],[.08,.48],[.11,.42],[.12,.58],[.13,.70],[.18,.70],[.24,.58],[.25,.44],[.26,.66],[.26,.88],[.22,1.0],[.15,.96],[.18,.84],[.28,.72],[.40,.66]]},
+  z:{w:.36,p:[[0,.72],[.08,.52],[.14,.45],[.21,.47],[.17,.57],[.11,.66],[.20,.69],[.25,.80],[.23,.94],[.15,.96],[.14,.85],[.24,.72],[.36,.66]]},
+  '0':{w:.36,p:[[.18,.38],[.06,.44],[.02,.58],[.06,.70],[.18,.73],[.30,.66],[.34,.52],[.30,.42],[.18,.38]]},
+  '1':{w:.20,p:[[.02,.46],[.12,.38],[.13,.55],[.14,.72]]},
+  '2':{w:.34,p:[[.02,.46],[.10,.38],[.22,.38],[.28,.46],[.24,.56],[.12,.66],[.04,.72],[.18,.71],[.32,.70]]},
+  '3':{w:.32,p:[[.02,.42],[.12,.37],[.22,.40],[.24,.48],[.16,.54],[.24,.58],[.28,.66],[.20,.73],[.08,.72],[.02,.66]]},
+  '4':{w:.34,p:[[.22,.72],[.22,.50],[.21,.38],[.10,.52],[.02,.62],[.16,.61],[.30,.60]]},
+  '5':{w:.32,p:[[.26,.38],[.10,.38],[.08,.52],[.16,.50],[.26,.54],[.28,.64],[.20,.72],[.08,.72],[.02,.66]]},
+  '6':{w:.34,p:[[.26,.40],[.14,.38],[.05,.48],[.02,.60],[.06,.70],[.17,.73],[.26,.68],[.28,.58],[.20,.52],[.08,.56]]},
+  '7':{w:.32,p:[[.02,.40],[.16,.38],[.30,.38],[.20,.54],[.14,.72]]},
+  '8':{w:.32,p:[[.16,.54],[.06,.50],[.04,.42],[.12,.37],[.22,.40],[.24,.48],[.16,.54],[.06,.60],[.04,.68],[.12,.74],[.22,.72],[.26,.64],[.24,.58],[.16,.54]]},
+  '9':{w:.34,p:[[.28,.48],[.18,.54],[.07,.50],[.04,.42],[.12,.37],[.24,.38],[.29,.46],[.28,.58],[.24,.68],[.16,.73]]},
+  ' ':{w:.30,p:[]}
+};
+  function sampleSpline(pts, step){
+    if (pts.length < 2) return pts.slice();
+    const out = [pts[0]];
+    for (let i = 0; i < pts.length - 1; i++){
+      const p0 = pts[Math.max(0, i-1)], p1 = pts[i], p2 = pts[i+1], p3 = pts[Math.min(pts.length-1, i+2)];
+      const d = Math.hypot(p2[0]-p1[0], p2[1]-p1[1]);
+      const n = Math.max(2, Math.ceil(d / step));
+      for (let k = 1; k <= n; k++){
+        const t = k / n, t2 = t*t, t3 = t2*t;
+        out.push([
+          0.5*((2*p1[0]) + (-p0[0]+p2[0])*t + (2*p0[0]-5*p1[0]+4*p2[0]-p3[0])*t2 + (-p0[0]+3*p1[0]-3*p2[0]+p3[0])*t3),
+          0.5*((2*p1[1]) + (-p0[1]+p2[1])*t + (2*p0[1]-5*p1[1]+4*p2[1]-p3[1])*t2 + (-p0[1]+3*p1[1]-3*p2[1]+p3[1])*t3)
+        ]);
+      }
+    }
+    return out;
+  }
+  let word = 'austin';
+  let mode = 'idle';
+  let followLock = false;           // idle | follow | write | hold | fade
   let path = [], pi = 0, penDown = false, lastPen = null, lastE = null, holdT = 0;
   const ink = [];
   let inkAlpha = 1, writeTimer = 0;
@@ -1092,29 +1110,41 @@ document.querySelectorAll('video').forEach(v=>{
   }
   function buildPath(w){
     const m = Math.min(W, H), b = base();
-    const n = Math.max(1, w.length);
-    let lh = m * 0.16, lw = lh * 0.6, gap = lw * 0.5;
-    let total = n * lw + (n - 1) * gap;
-    const maxW = m * 0.78;
-    if (total > maxW){ const sc = maxW / total; lh *= sc; lw *= sc; gap *= sc; total = maxW; }
-    const x0 = b.x - total / 2, yTop = b.y - m * 0.52, step = Math.max(2, m * 0.014);
-    const pts = [];
-    let cur = { x: b.x - m * 0.3, y: yTop + lh * 0.5 };
-    for (let ci = 0; ci < w.length; ci++){
-      const g = GLYPHS[w[ci]] || [];
-      const gx = x0 + ci * (lw + gap);
-      for (const st of g){
-        const sp = { x: gx + st[0] * lw, y: yTop + st[1] * lh };
-        seg(pts, cur, sp, step * 3, false);
-        cur = sp;
-        for (let i = 2; i < st.length; i += 2){
-          const np = { x: gx + st[i] * lw, y: yTop + st[i + 1] * lh };
-          seg(pts, cur, np, step, true);
-          cur = np;
-        }
+    const chains = [], det = [];
+    let chain = [], x = 0;
+    const track = 0.06;
+    for (const ch of w){
+      const g = CURSIVE[ch];
+      if (!g) continue;
+      const isLetter = ch >= 'a' && ch <= 'z';
+      if (!g.p.length || !isLetter){
+        if (chain.length){ chains.push(chain); chain = []; }
+        if (g.p.length) chains.push(g.p.map(pt => [pt[0] + x, pt[1]]));
+        (g.d || []).forEach(st => det.push(st.map(pt => [pt[0] + x, pt[1]])));
+        x += g.w + track;
+        continue;
       }
+      chain.push(...g.p.map(pt => [pt[0] + x, pt[1]]));
+      (g.d || []).forEach(st => det.push(st.map(pt => [pt[0] + x, pt[1]])));
+      x += g.w + track;
     }
-    seg(pts, cur, { x: b.x + m * 0.3, y: yTop - m * 0.02 }, step * 3, false);
+    if (chain.length) chains.push(chain);
+    const gw = Math.max(0.3, x - track);
+    let lh = m * 0.30;
+    if (gw * lh > m * 0.80) lh = m * 0.80 / gw;
+    const x0 = b.x - gw * lh / 2, yTop = b.y - m * 0.60, step = Math.max(2, m * 0.012);
+    const P = pt => ({ x: x0 + pt[0] * lh, y: yTop + pt[1] * lh });
+    const pts = [];
+    let cur = { x: b.x - m * 0.30, y: yTop + lh * 0.5 };
+    for (const st of chains.concat(det)){
+      const sm = sampleSpline(st, step / lh);
+      if (sm.length < 2) continue;
+      const sp = P(sm[0]);
+      seg(pts, cur, sp, step * 3, false);
+      for (let i = 1; i < sm.length; i++){ const q = P(sm[i]); pts.push({ x: q.x, y: q.y, pen: true }); }
+      cur = P(sm[sm.length - 1]);
+    }
+    seg(pts, cur, { x: b.x + m * 0.30, y: yTop - m * 0.02 }, step * 3, false);
     return pts;
   }
   function startWrite(){
@@ -1152,7 +1182,7 @@ document.querySelectorAll('video').forEach(v=>{
       }
       const p = path[pi];
       penDown = p.pen && reach(p) < 16;
-      if (pi >= path.length - 1 && reach(p) < 8){ mode = 'hold'; holdT = performance.now(); penDown = false; }
+      if (pi >= path.length - 1 && reach(p) < 8){ mode = 'hold'; holdT = performance.now(); penDown = false; followLock = false; }
       return { x: p.x, y: p.y };
     }
     penDown = false;
@@ -1177,18 +1207,37 @@ document.querySelectorAll('video').forEach(v=>{
     canvas.width = W * dpr; canvas.height = H * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     const m = Math.min(W, H);
-    L1 = m * 0.42; L2 = m * 0.34;
-    if (wasDead){ a1 = -Math.PI/2.3; a2 = 0.9; trail.length = 0; }
+    L = [m * 0.34, m * 0.27, m * 0.20];
+    if (wasDead || J.length !== 4){ resetChain(); trail.length = 0; }
   }
   const base = () => ({ x: W/2, y: H*0.88 });
-  function ik(tx, ty){
+  function resetChain(){
     const b = base();
-    const dx = tx - b.x, dy = ty - b.y;
-    let d = Math.hypot(dx, dy);
-    d = Math.max(Math.abs(L1 - L2) + 2, Math.min(L1 + L2 - 2, d));
-    const q2 = Math.acos((d*d - L1*L1 - L2*L2) / (2*L1*L2));
-    const q1 = Math.atan2(dy, dx) - Math.atan2(L2*Math.sin(q2), L1 + L2*Math.cos(q2));
-    return [q1, q2];
+    J = [
+      { x: b.x, y: b.y },
+      { x: b.x + L[0]*0.18, y: b.y - L[0]*0.98 },
+      { x: b.x + L[0]*0.18 + L[1]*0.55, y: b.y - L[0]*0.98 - L[1]*0.80 },
+      { x: b.x + L[0]*0.18 + L[1]*0.55 + L[2]*0.90, y: b.y - L[0]*0.98 - L[1]*0.80 - L[2]*0.30 }
+    ];
+    chase = { x: J[3].x, y: J[3].y };
+  }
+  function solve(tx, ty){
+    const b = base();
+    const total = L[0] + L[1] + L[2];
+    const dx = tx - b.x, dy = ty - b.y, d = Math.hypot(dx, dy);
+    if (d > total - 1){ const sc = (total - 1) / d; tx = b.x + dx*sc; ty = b.y + dy*sc; }
+    for (let it = 0; it < 6; it++){
+      J[3].x = tx; J[3].y = ty;
+      for (let i = 2; i >= 0; i--){
+        const nx = J[i].x - J[i+1].x, ny = J[i].y - J[i+1].y, dd = Math.hypot(nx, ny) || 1;
+        J[i] = { x: J[i+1].x + nx/dd*L[i], y: J[i+1].y + ny/dd*L[i] };
+      }
+      J[0] = { x: b.x, y: b.y };
+      for (let i = 1; i <= 3; i++){
+        const nx = J[i].x - J[i-1].x, ny = J[i].y - J[i-1].y, dd = Math.hypot(nx, ny) || 1;
+        J[i] = { x: J[i-1].x + nx/dd*L[i-1], y: J[i-1].y + ny/dd*L[i-1] };
+      }
+    }
   }
   function idleTarget(){
     const b = base(), m = Math.min(W, H);
@@ -1199,6 +1248,7 @@ document.querySelectorAll('video').forEach(v=>{
   header.addEventListener('pointermove', ev=>{
     if (dead) return;
     const r = canvas.getBoundingClientRect();
+    if (followLock) return;
     target = { x: ev.clientX - r.left, y: ev.clientY - r.top };
     if (mode !== 'follow'){ mode = 'follow'; penDown = false; lastPen = null; clearTimeout(writeTimer); }
   });
@@ -1206,12 +1256,6 @@ document.querySelectorAll('video').forEach(v=>{
     target = null;
     if (mode === 'follow'){ mode = 'idle'; scheduleWrite(1800); }
   });
-  function lerpAngle(a, b, t){
-    let d = b - a;
-    while (d >  Math.PI) d -= 2*Math.PI;
-    while (d < -Math.PI) d += 2*Math.PI;
-    return a + d*t;
-  }
   function joint(x, y, r){
     ctx.fillStyle = C.jointFill; ctx.strokeStyle = C.accent; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fill(); ctx.stroke();
@@ -1229,11 +1273,10 @@ document.querySelectorAll('video').forEach(v=>{
     ctx.clearRect(0, 0, W, H);
     const b = base();
     const t = nextTarget();
-    const [q1, q2] = ik(t.x, t.y);
-    const k = mode === 'write' ? 0.45 : 0.14;
-    a1 = lerpAngle(a1, q1, k); a2 = lerpAngle(a2, q2, k);
-    const j = { x: b.x + L1*Math.cos(a1), y: b.y + L1*Math.sin(a1) };
-    const e = { x: j.x + L2*Math.cos(a1 + a2), y: j.y + L2*Math.sin(a1 + a2) };
+    const k = mode === 'write' ? 0.5 : 0.14;
+    chase.x += (t.x - chase.x) * k; chase.y += (t.y - chase.y) * k;
+    solve(chase.x, chase.y);
+    const e = { x: J[3].x, y: J[3].y };
     lastE = e;
     if (mode === 'write'){
       if (penDown && lastPen) ink.push({ x0: lastPen.x, y0: lastPen.y, x1: e.x, y1: e.y });
@@ -1259,11 +1302,12 @@ document.querySelectorAll('video').forEach(v=>{
     ctx.beginPath();
     if (ctx.roundRect) ctx.roundRect(b.x-34, b.y, 68, 10, 4); else ctx.rect(b.x-34, b.y, 68, 10);
     ctx.fill(); ctx.stroke();
-    link(b.x, b.y, j.x, j.y, 14);
-    link(j.x, j.y, e.x, e.y, 10);
-    joint(b.x, b.y, 8); joint(j.x, j.y, 6);
+    link(J[0].x, J[0].y, J[1].x, J[1].y, 14);
+    link(J[1].x, J[1].y, J[2].x, J[2].y, 10);
+    link(J[2].x, J[2].y, J[3].x, J[3].y, 7);
+    joint(J[0].x, J[0].y, 8); joint(J[1].x, J[1].y, 6); joint(J[2].x, J[2].y, 5);
     ctx.shadowColor = 'rgba(' + C.accentRgb + ',.8)'; ctx.shadowBlur = 12;
-    joint(e.x, e.y, 5);
+    joint(J[3].x, J[3].y, 4.5);
     ctx.shadowBlur = 0;
   }
   function loop(){
@@ -1275,8 +1319,8 @@ document.querySelectorAll('video').forEach(v=>{
   function staticPose(){
     target = { x: W*0.68, y: H*0.32 };
     mode = 'follow';
-    const [q1, q2] = ik(target.x, target.y);
-    a1 = q1; a2 = q2;
+    chase = { x: target.x, y: target.y };
+    solve(chase.x, chase.y);
     frame();
   }
   function wake(){
@@ -1292,7 +1336,7 @@ document.querySelectorAll('video').forEach(v=>{
       resizeQueued = false;
       resize();
       if (mode === 'write' || mode === 'hold' || mode === 'fade'){
-        ink.length = 0; inkAlpha = 1; mode = 'idle'; scheduleWrite(1200);
+        ink.length = 0; inkAlpha = 1; mode = 'idle'; followLock = false; scheduleWrite(1200);
       }
       if (!dead && noMotion.matches) staticPose();
     });
@@ -1305,12 +1349,12 @@ document.querySelectorAll('video').forEach(v=>{
   if (armForm){
     armForm.addEventListener('submit', ev=>{
       ev.preventDefault();
-      const raw = armForm.querySelector('input').value.toUpperCase().replace(/[^A-Z0-9 ]/g, '').replace(/\s+/g, ' ').trim();
-      word = raw || 'AUSTIN';
+      const raw = armForm.querySelector('input').value.toLowerCase().replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ').trim();
+      word = raw || 'austin';
       document.dispatchEvent(new CustomEvent('arm:write'));
       if (dead) return;
       if (noMotion.matches){ instantInk(); staticPose(); }
-      else { clearTimeout(writeTimer); startWrite(); }
+      else { clearTimeout(writeTimer); followLock = true; startWrite(); }
     });
   }
   resize();
