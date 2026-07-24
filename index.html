@@ -554,7 +554,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
           <h3>AI Operations Agent for Robotic Automation</h3>
           <div class="impact">A safety-gated LLM agent helping engineers run a robotic chemistry lab</div>
           <p>An AI assistant for a robotic high-throughput chemistry lab — read-only by default, with every real-world action gated behind five safety checks and a full audit trail. Built to production software standards: strict typing, 130+ automated tests behind an enforced coverage gate.</p>
-          <details class="depth">
+          <details class="depth" data-pid="ai-ops-safety">
             <summary>Inside the safety design</summary>
             <div class="depth-body">
               <p><strong>The five gates.</strong> A real-world action executes only with a registered policy, an authorized engineer role, a passing preflight, an exact confirmation token, and an audit record — miss any one and the agent stays read-only.</p>
@@ -606,7 +606,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
           <h3>Clash Bots — 110 kg Combat Robot</h3>
           <div class="impact">Built for a TV series with 1B+ views worldwide</div>
           <p>Led a four-person team building a heavyweight battle robot in eight months: impact-resistant mechanism design, RF control, welding, and full electro-mechanical integration.</p>
-          <details class="depth">
+          <details class="depth" data-pid="clashbots-build">
             <summary>Inside the build — post-battle</summary>
             <div class="depth-body">
               <img src="assets/img/clashbots_build.jpg" alt="Welded steel chassis of the combat robot with drive chains, motors, and wiring exposed" width="1200" height="1600" loading="lazy">
@@ -622,7 +622,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
 
     <h3 class="index-head reveal">Personal tooling</h3>
     <div class="proj-index">
-      <details class="proj-row reveal" data-tags="agents">
+      <details class="proj-row reveal" data-tags="agents" data-pid="agent-workbench">
         <summary><span class="row-title">Agent Workbench — Memory for AI Coding Agents</span><span class="row-impact">Pip-installable memory scaffold: incremental digests, cross-project lessons, fail-closed privacy validation</span><span class="row-meta">Personal build</span><span class="row-chev" aria-hidden="true">▾</span></summary>
         <div class="row-body">
           <div class="row-text">
@@ -632,7 +632,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
           </div>
         </div>
       </details>
-      <details class="proj-row reveal" data-tags="agents">
+      <details class="proj-row reveal" data-tags="agents" data-pid="duty-bot">
         <summary><span class="row-title">Lab Duty Reminder Bot</span><span class="row-impact">Shift-aware chat-ops reminders that re-ping until someone acknowledges</span><span class="row-meta">Personal build</span><span class="row-chev" aria-hidden="true">▾</span></summary>
         <div class="row-body">
           <div class="row-text">
@@ -646,7 +646,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
 
     <h3 class="index-head reveal">Earlier academic work — Johns Hopkins, 2022–24</h3>
     <div class="proj-index">
-      <details class="proj-row reveal" data-tags="hardware">
+      <details class="proj-row reveal" data-tags="hardware" data-pid="ur5-drawing">
         <summary><span class="row-title">UR5 Robot Arm — Control &amp; Image Drawing</span><span class="row-impact">Inverse kinematics, Jacobian &amp; resolved-rate control — the arm draws the JHU logo</span><span class="row-meta">2022</span><span class="row-chev" aria-hidden="true">▾</span></summary>
         <div class="row-body">
           <div class="row-text">
@@ -657,7 +657,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
             <div class="row-media"><video controls muted loop playsinline preload="none" poster="assets/media/rdkdc_imagedrawing_poster.jpg" src="assets/media/rdkdc_imagedrawing.mp4" aria-label="UR5 robot arm drawing the Johns Hopkins logo"></video></div>
         </div>
       </details>
-      <details class="proj-row reveal" data-tags="hardware perception">
+      <details class="proj-row reveal" data-tags="hardware perception" data-pid="ur5-sensor">
         <summary><span class="row-title">Sensor-Based UR5 Manipulation</span><span class="row-impact">Hand-eye calibration to 0.2 mm end-effector error · 73% faster RRT planning</span><span class="row-meta">2022</span><span class="row-chev" aria-hidden="true">▾</span></summary>
         <div class="row-body">
           <div class="row-text">
@@ -667,7 +667,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
           </div>
         </div>
       </details>
-      <details class="proj-row reveal" data-tags="medical perception">
+      <details class="proj-row reveal" data-tags="medical perception" data-pid="hololens-fov">
         <summary><span class="row-title">Extending Human Perception with HoloLens 2</span><span class="row-impact">Effective field of view +33%, past 180° — via a radar mini-map AR UI</span><span class="row-meta">XR</span><span class="row-chev" aria-hidden="true">▾</span></summary>
         <div class="row-body">
           <div class="row-text">
@@ -678,7 +678,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
             <div class="row-media"><video controls muted loop playsinline preload="none" poster="assets/media/perception_demo_poster.jpg" src="assets/media/perception_demo.mp4" aria-label="HoloLens radar mini-map tracking objects outside the field of view"></video></div>
         </div>
       </details>
-      <details class="proj-row reveal" data-tags="perception">
+      <details class="proj-row reveal" data-tags="perception" data-pid="segmentation">
         <summary><span class="row-title">Semantic Segmentation with Transfer Learning</span><span class="row-impact">Pixel accuracy 66% → 81%, mIoU 60% → 78% on a self-collected street dataset</span><span class="row-meta">ML</span><span class="row-chev" aria-hidden="true">▾</span></summary>
         <div class="row-body">
           <div class="row-text">
@@ -689,7 +689,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
             <div class="row-media"><video controls muted loop playsinline preload="none" poster="assets/media/segmentation_poster.jpg" src="assets/media/segmentation.mp4" aria-label="Semantic segmentation inference improving across training epochs"></video></div>
         </div>
       </details>
-      <details class="proj-row reveal" data-tags="medical">
+      <details class="proj-row reveal" data-tags="medical" data-pid="stereotactic-nav">
         <summary><span class="row-title">Stereotactic Navigation — Calibration &amp; Distortion Correction</span><span class="row-impact">Bernstein-polynomial distortion correction for surgical navigation</span><span class="row-meta">CIS</span><span class="row-chev" aria-hidden="true">▾</span></summary>
         <div class="row-body">
           <div class="row-text">
@@ -699,7 +699,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
           </div>
         </div>
       </details>
-      <details class="proj-row reveal" data-tags="perception">
+      <details class="proj-row reveal" data-tags="perception" data-pid="sfm">
         <summary><span class="row-title">Structure-from-Motion 3D Reconstruction</span><span class="row-impact">Matching accuracy +70% via Lowe's ratio test — 3D geometry from monocular video</span><span class="row-meta">CV</span><span class="row-chev" aria-hidden="true">▾</span></summary>
         <div class="row-body">
           <div class="row-text">
@@ -709,7 +709,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
           </div>
         </div>
       </details>
-      <details class="proj-row reveal" data-tags="medical perception">
+      <details class="proj-row reveal" data-tags="medical perception" data-pid="icp">
         <summary><span class="row-title">Iterative Closest Point for 3D Surface Matching</span><span class="row-impact">Covariance-tree accelerated registration for computer-integrated surgery</span><span class="row-meta">CIS</span><span class="row-chev" aria-hidden="true">▾</span></summary>
         <div class="row-body">
           <div class="row-text">
@@ -902,6 +902,7 @@ addEventListener('scroll', ()=>{
     b.className = 'fbtn';
     b.textContent = label;
     b.setAttribute('aria-pressed', String(i===0));
+    b.dataset.key = key;
     b.addEventListener('click', ()=>apply(key, b));
     fbtns.push(b);
     row.append(b);
@@ -1139,6 +1140,115 @@ document.querySelectorAll('video').forEach(v=>{
   addEventListener('themechange', ()=>{ C = readC(); if (!dead && noMotion.matches) staticPose(); });
   resize();
   wake();
+})();
+
+// Attention analytics — GoatCounter. Privacy-first: no cookies, no PII, honors DNT/GPC,
+// dormant until a site code is set, silent no-op under adblock.
+(function(){
+  var CODE = ''; // GoatCounter site code — set to enable analytics
+  if (!CODE) return;
+  if (location.hostname !== 'austinhuang823.github.io') return;
+  if (navigator.doNotTrack === '1' || window.doNotTrack === '1' || navigator.globalPrivacyControl || navigator.webdriver) return;
+  var GC = 'https://' + CODE + '.goatcounter.com/count';
+  var mem = Object.create(null);
+  function once(k){
+    try{ if (sessionStorage.getItem('gc:'+k)) return false; sessionStorage.setItem('gc:'+k,'1'); }
+    catch(e){ if (mem[k]) return false; mem[k] = 1; }
+    return true;
+  }
+  function send(p, ev){
+    var i = new Image();
+    i.src = GC + '?p=' + encodeURIComponent(p) + (ev ? '&e=true'
+      : '&t=' + encodeURIComponent(document.title) + '&r=' + encodeURIComponent(document.referrer))
+      + '&rnd=' + Date.now();
+  }
+  function track(name){ if (once(name)) send(name, true); }
+
+  function boot(){
+    if (once('pv')) send('/', false);
+
+    // Section attention: fires once per section after >=3s of accumulated mid-viewport visibility
+    var hero = document.querySelector('header');
+    if (hero && !hero.id) hero.id = 'hero';
+    var dwell = {};
+    var dio = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        var st = dwell[e.target.id];
+        if (!st || st.done) return;
+        st.inView = e.isIntersecting;
+        if (e.isIntersecting && !document.hidden){ st.since = performance.now(); arm(st); }
+        else bank(st);
+      });
+    }, {threshold: 0, rootMargin: '-35% 0px -35% 0px'});
+    function arm(st){
+      clearTimeout(st.t);
+      st.t = setTimeout(function(){ st.done = true; track('section/' + st.id); dio.unobserve(st.el); }, Math.max(0, 3000 - st.acc));
+    }
+    function bank(st){
+      clearTimeout(st.t);
+      if (st.since){ st.acc += performance.now() - st.since; st.since = 0; }
+    }
+    ['hero','experience','projects','skills','about','contact'].forEach(function(id){
+      var el = document.getElementById(id);
+      if (el){ dwell[id] = {el: el, id: id, acc: 0, since: 0, t: 0, inView: false, done: false}; dio.observe(el); }
+    });
+    document.addEventListener('visibilitychange', function(){
+      Object.keys(dwell).forEach(function(k){
+        var st = dwell[k];
+        if (document.hidden) bank(st);
+        else if (st.inView && !st.done){ st.since = performance.now(); arm(st); }
+      });
+    });
+
+    // Scroll depth milestones
+    var marks = [25, 50, 75, 100], ticking = false;
+    function depth(){
+      ticking = false;
+      var max = document.documentElement.scrollHeight - innerHeight;
+      if (max <= 0) return;
+      var pct = (scrollY / max) * 100;
+      while (marks.length && pct >= marks[0]) track('scroll/' + marks.shift());
+      if (!marks.length) removeEventListener('scroll', onScroll);
+    }
+    function onScroll(){ if (!ticking){ ticking = true; requestAnimationFrame(depth); } }
+    addEventListener('scroll', onScroll, {passive: true});
+
+    // Clicks: conversions, filters, theme, videos, outbound
+    document.addEventListener('click', function(ev){
+      var el = ev.target.closest ? ev.target.closest('a,button') : null;
+      if (!el) return;
+      if (el.matches('a[href$="Resume_AustinHuang.pdf"]')) return track('click/resume-pdf');
+      if (el.matches('a[href^="mailto:"]')) return track('click/email');
+      if (el.classList.contains('fbtn')){
+        if (el.dataset.key && el.dataset.key !== 'all') track('filter/' + el.dataset.key);
+        return;
+      }
+      if (el.closest('.theme-toggle')){
+        return track('theme/' + (document.documentElement.dataset.theme === 'heritage' ? 'heritage' : 'obsidian'));
+      }
+      if (el.classList.contains('vid-toggle')){
+        var v = el.parentElement.querySelector('video');
+        if (v && !v.paused) track('video/' + (v.currentSrc || v.src).split('/').pop().replace('.mp4',''));
+        return;
+      }
+      if (el.tagName === 'A' && /^https?:/.test(el.href) && el.host !== location.host){
+        var seg = el.pathname.split('/').filter(Boolean)[0] || '';
+        track('outbound/' + el.host + (seg ? '/' + seg : ''));
+      }
+    });
+
+    // Project story/detail expands ('toggle' doesn't bubble — use capture)
+    document.addEventListener('toggle', function(ev){
+      var d = ev.target;
+      if (d.tagName === 'DETAILS' && d.open && d.dataset.pid) track('expand/' + d.dataset.pid);
+    }, true);
+
+    // Signature-moment usage (no user text is ever sent)
+    document.addEventListener('arm:write', function(){ track('arm/write'); });
+  }
+
+  if ('requestIdleCallback' in window) requestIdleCallback(boot, {timeout: 2000});
+  else setTimeout(boot, 1500);
 })();
 </script>
 </body>
