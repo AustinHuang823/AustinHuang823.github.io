@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Debugging a robot lab back to 100% — Austin Huang</title>
+<meta name="description" content="A production case study in methodology: how a robotic chemistry platform at a Fortune-500 pharma partner went from a 59% task pass rate to 100% — instrumentation, error modeling, and verification.">
+<meta property="og:title" content="Debugging a robot lab back to 100%">
+<meta property="og:description" content="How I take a misbehaving robotic system apart: instrumentation, ablation testing, a purpose-built error model, and fixes proven on production runs. 59→100% pass rate, −94% failures.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://austinhuang823.github.io/case-study.html">
+<meta property="og:site_name" content="Austin Huang — Portfolio">
+<meta property="og:image" content="https://austinhuang823.github.io/assets/img/og-card.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0a0e14">
+<link rel="canonical" href="https://austinhuang823.github.io/case-study.html">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/assets/img/favicon-96.png" type="image/png" sizes="96x96">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+<link rel="preload" href="assets/fonts/space-grotesk-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;src:url('assets/fonts/inter-var.woff2') format('woff2')}
+@font-face{font-family:'Space Grotesk';font-style:normal;font-weight:300 700;font-display:swap;src:url('assets/fonts/space-grotesk-var.woff2') format('woff2')}
+:root{
+  --bg:#0a0e14; --bg2:#0e1621; --card:#111926;
+  --border:#1e2a3c; --border2:#2a3b52;
+  --text:#e9eff6; --muted:#94a5ba; --faint:#7d8fa5;
+  --accent:#3ee6c4; --accent-dim:#2ba690; --accent-bg:rgba(62,230,196,.09);
+  --accent-rgb:62,230,196; --accent-ink:#04211b; --accent-bright:#5cf0d3;
+  --gold:#f5c542;
+  --nav-bg:rgba(10,14,20,.82);
+  --maxw:760px;
+}
+html[data-theme="heritage"]{
+  --bg:#06101f; --bg2:#0a1a33; --card:#0e2140;
+  --border:#1c3a66; --border2:#2b4f85;
+  --text:#eaf1fa; --muted:#a9bfdb; --faint:#8099ba;
+  --accent:#68ace5; --accent-dim:#4a8fc7; --accent-bg:rgba(104,172,229,.1); --accent-rgb:104,172,229;
+  --accent-ink:#041a33; --accent-bright:#8ec4f0;
+  --gold:#f1c400;
+  --nav-bg:rgba(6,16,31,.82);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:16.5px;line-height:1.7;-webkit-font-smoothing:antialiased}
+h1,h2,.m .n,.logo{font-family:'Space Grotesk','Inter',sans-serif}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+nav{position:sticky;top:0;z-index:50;background:var(--nav-bg);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:900px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:20px}
+.logo{font-weight:700;font-size:17px;color:var(--text);letter-spacing:.2px}
+.logo:hover{text-decoration:none}
+.logo span{color:var(--accent)}
+.nav-inner .spacer{margin-left:auto}
+.theme-toggle{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:10px;border:1px solid var(--border2);background:none;color:var(--muted);font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
+.theme-toggle:hover{border-color:var(--accent-dim);color:var(--text)}
+.theme-toggle .swatch{width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,var(--accent) 0 55%,var(--gold) 55% 100%);flex:none}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:10px;font-weight:600;font-size:14.5px;border:1px solid var(--border2);color:var(--text)}
+.btn:hover{text-decoration:none;border-color:var(--accent-dim)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{background:var(--accent-bright)}
+header.case{border-bottom:1px solid var(--border);background:
+  radial-gradient(ellipse 55% 45% at 72% 8%, rgba(var(--accent-rgb),.07), transparent),
+  linear-gradient(var(--bg2), var(--bg));padding:72px 0 56px}
+.kicker{color:var(--accent);font-weight:600;font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px}
+h1{font-size:clamp(32px,6vw,48px);font-weight:700;letter-spacing:-1px;line-height:1.1;margin-bottom:14px}
+.sub{color:var(--muted);font-size:18px;max-width:640px}
+.metrics{display:flex;gap:34px;flex-wrap:wrap;margin-top:36px}
+.m .n{font-size:28px;font-weight:700}
+.m .n .dim{color:var(--faint);font-size:21px}
+.m .l{color:var(--faint);font-size:12.5px;letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+main{padding:26px 0 40px}
+article h2{font-family:'Space Grotesk','Inter',sans-serif;font-size:23px;font-weight:700;letter-spacing:-.3px;margin:44px 0 14px}
+article p{color:var(--muted);margin-bottom:15px}
+article p strong{color:var(--text);font-weight:600}
+article ul{margin:0 0 15px 20px;color:var(--muted)}
+article li{margin-bottom:8px}
+article li strong{color:var(--text)}
+.note{border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:10px;background:var(--card);padding:14px 18px;color:var(--muted);font-size:14.5px;margin:20px 0}
+.pull{border-left:3px solid var(--accent);padding:2px 0 2px 16px;margin:24px 0;color:var(--text);font-size:19px;font-weight:600;line-height:1.5}
+.steps{counter-reset:st;list-style:none;margin-left:0}
+.steps li{counter-increment:st;position:relative;padding-left:44px;margin-bottom:14px}
+.steps li::before{content:counter(st);position:absolute;left:0;top:1px;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--accent-dim);color:var(--accent);font-weight:700;font-size:13.5px;display:flex;align-items:center;justify-content:center}
+.cta{border-top:1px solid var(--border);margin-top:52px;padding-top:32px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+footer{border-top:1px solid var(--border);padding:24px 0;color:var(--faint);font-size:13.5px}
+footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+@media (max-width:640px){ .metrics{gap:22px} }
+</style>
+<script>try{if(localStorage.getItem('palette')==='heritage')document.documentElement.dataset.theme='heritage'}catch(e){}</script>
+</head>
+<body>
+
+<nav aria-label="Main">
+  <div class="nav-inner">
+    <a class="logo" href="/">austin<span>.</span>huang</a>
+    <span class="spacer"></span>
+    <button class="theme-toggle" aria-label="Switch style"><span class="swatch" aria-hidden="true"></span><span class="theme-name">Obsidian</span></button>
+    <a class="btn" href="assets/docs/Resume_AustinHuang.pdf" target="_blank" rel="noopener">Resume ↓</a>
+  </div>
+</nav>
+
+<header class="case">
+  <div class="wrap">
+    <div class="kicker">Production case study · XtalPi · 2024–25</div>
+    <h1>Debugging a robot lab back to 100%</h1>
+    <p class="sub">A robotic chemistry platform landed at a Fortune-500 pharma partner's R&amp;D headquarters passing 59% of its tasks. This is the methodology that took it to 100% — and kept it there.</p>
+    <div class="metrics" role="list">
+      <div class="m" role="listitem"><div class="n"><span class="dim">59 →</span> 100%</div><div class="l">task pass rate</div></div>
+      <div class="m" role="listitem"><div class="n"><span class="dim">29 →</span> 98%</div><div class="l">target hit rate</div></div>
+      <div class="m" role="listitem"><div class="n">−94%</div><div class="l">operational failures</div></div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <article>
+
+      <h2>The situation</h2>
+      <p>XtalPi's first U.S. commercial deployment: a fully automated chemistry lab — <strong>ABB robot arms, AGVs, vision systems, and modular automation stations</strong> under a scheduling layer — shipped to a customer's R&amp;D headquarters. I had built the lab; now I moved in with it as the <strong>primary on-site system owner</strong>.</p>
+      <p>On the customer's floor, under real operating constraints, the platform passed <strong>59%</strong> of its task evaluations. Every failure happened in front of the people deciding whether to buy more of it. There is no better forcing function for engineering honesty.</p>
+
+      <div class="note">What this write-up deliberately leaves out: the customer's name, facility details, throughput figures, and any platform internals beyond what my public resume states. What it keeps is the part that transfers — the method.</div>
+
+      <h2>Instrument first, touch second</h2>
+      <p>The tempting move at 59% is to start fixing the failures you can see. The correct move is to make the system tell you what is actually failing:</p>
+      <ul class="steps">
+        <li><strong>Build the failure taxonomy before the fix list.</strong> Every failed task got classified — hardware, perception, coordination timing, or handling — from logs plus floor observation. Symptoms and failure classes are different things; a dropped vial and a mis-localized vial look identical in the outcome column.</li>
+        <li><strong>Ablation-test the stack.</strong> Disable or simplify one subsystem at a time until a failure mode disappears — the robotics equivalent of a controlled experiment. Failure modes that survived ablation pointed at interactions, not components.</li>
+        <li><strong>Trust production data only.</strong> Lab-bench reproductions lie: lighting, fixturing, and timing all differ. Every hypothesis had to be confirmed on production runs before it earned a fix.</li>
+      </ul>
+
+      <h2>The error model</h2>
+      <p>Intuition doesn't scale past a handful of failure modes, so pass/fail intuition was replaced with a <strong>purpose-built error model tuned on production data</strong>: each task decomposed into stages, each stage carrying an expected-versus-measured budget — pose error, timing windows, sensor confidence. Once errors had budgets, drift became visible <em>before</em> it became failure.</p>
+      <p>The model pointed somewhere unglamorous: <strong>sensor drift</strong> was quietly consuming the pose-error budget. The fix was a calibration policy rather than a patch — including a <strong>monocular contour-based calibration method</strong> for end-effector pose correction, validated in a <strong>MuJoCo simulation framework</strong> across randomized pose-error cases before it ever touched the floor. Less hardware than the stereo approach it replaced, and higher precision.</p>
+      <div class="pull">Debugging spanned everything with a wire in it: actuators, sensors, motor controllers over Modbus and CAN, and the control software above them.</div>
+
+      <h2>What changed</h2>
+      <ul>
+        <li><strong>Calibration:</strong> the monocular end-effector correction, plus drift monitoring so recalibration happens on evidence, not on schedule.</li>
+        <li><strong>Coordination:</strong> task-scheduling and error-handling logic hardened around the failure classes the taxonomy exposed.</li>
+        <li><strong>Vision-guided manipulation:</strong> robustness work on the perception-to-action path — the difference between a demo that works and a station that works every hour of a shift.</li>
+        <li><strong>Failure discipline:</strong> every incident root-caused; a fix counted only when proven on production runs. No fix closed on a hunch.</li>
+      </ul>
+
+      <h2>The outcome</h2>
+      <p>Task pass rate went from <strong>59% to 100%</strong>. Target hit rate went from <strong>29% to 98%</strong>. Operational failures fell <strong>94%</strong>. The evidence trail — FAT/SAT acceptance packages, bilingual delivery documentation — went to the customer with the system.</p>
+      <p>Then came the part metrics don't capture: <strong>live demonstrations of the stabilized platform</strong> for the customer's teams, which turned into <strong>multi-million-dollar expansion orders</strong>. Reliability, it turns out, is a sales channel.</p>
+
+      <h2>What generalizes</h2>
+      <ul>
+        <li>Instrument before you intervene — make the system confess.</li>
+        <li>Classify failures before fixing them; symptoms cluster, causes don't.</li>
+        <li>Give every error a budget; drift you can see is drift you can schedule around.</li>
+        <li>Validate in simulation before the production floor — MuJoCo is cheaper than downtime.</li>
+        <li>Close incidents on proven fixes only, and make the evidence the deliverable.</li>
+      </ul>
+
+      <div class="cta">
+        <a class="btn primary" href="/#case-xtalpi">Back to the portfolio</a>
+        <a class="btn" href="mailto:chuan120@alumni.jh.edu?subject=Case%20study%20walkthrough">Ask for the full walkthrough</a>
+      </div>
+
+    </article>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 Ching-Yang (Austin) Huang</div>
+    <div><a href="/">austinhuang823.github.io</a></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var btn = document.querySelector('.theme-toggle');
+  if (!btn) return;
+  var label = btn.querySelector('.theme-name');
+  function apply(t){
+    if (t === 'heritage') document.documentElement.dataset.theme = 'heritage';
+    else delete document.documentElement.dataset.theme;
+    label.textContent = t === 'heritage' ? 'Heritage' : 'Obsidian';
+  }
+  apply(document.documentElement.dataset.theme === 'heritage' ? 'heritage' : 'obsidian');
+  btn.addEventListener('click', function(){
+    var next = document.documentElement.dataset.theme === 'heritage' ? 'obsidian' : 'heritage';
+    try{ localStorage.setItem('palette', next); }catch(e){}
+    apply(next);
+  });
+})();
+(function(){
+  var CODE = ''; // GoatCounter site code — set to enable analytics
+  if (!CODE || location.hostname !== 'austinhuang823.github.io') return;
+  if (navigator.doNotTrack === '1' || window.doNotTrack === '1' || navigator.globalPrivacyControl || navigator.webdriver) return;
+  new Image().src = 'https://' + CODE + '.goatcounter.com/count?p=%2Fcase-study&t=' + encodeURIComponent(document.title) + '&r=' + encodeURIComponent(document.referrer) + '&rnd=' + Date.now();
+})();
+</script>
+</body>
+</html>
