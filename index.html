@@ -1083,7 +1083,7 @@ document.querySelectorAll('video').forEach(v=>{
   };
   let word = 'AUSTIN';
   let mode = 'idle';           // idle | follow | write | hold | fade
-  let path = [], pi = 0, penDown = false, lastPen = null, holdT = 0;
+  let path = [], pi = 0, penDown = false, lastPen = null, lastE = null, holdT = 0;
   const ink = [];
   let inkAlpha = 1, writeTimer = 0;
   function seg(pts, a, b2, step, pen){
@@ -1106,7 +1106,6 @@ document.querySelectorAll('video').forEach(v=>{
       for (const st of g){
         const sp = { x: gx + st[0] * lw, y: yTop + st[1] * lh };
         seg(pts, cur, sp, step * 3, false);
-        for (let r = 0; r < 6; r++) pts.push({ x: sp.x, y: sp.y, pen: false });
         cur = sp;
         for (let i = 2; i < st.length; i += 2){
           const np = { x: gx + st[i] * lw, y: yTop + st[i + 1] * lh };
@@ -1142,10 +1141,18 @@ document.querySelectorAll('video').forEach(v=>{
   function nextTarget(){
     if (mode === 'follow' && target) return target;
     if (mode === 'write'){
+      // advance waypoints only once the end-effector has converged — like real trajectory execution
+      const reach = pt => lastE ? Math.hypot(lastE.x - pt.x, lastE.y - pt.y) : 1e9;
+      let budget = path[pi].pen ? 2 : 4;
+      while (budget-- > 0 && pi < path.length - 1){
+        const cur = path[pi], nxt = path[pi + 1];
+        const tol = (nxt.pen && !cur.pen) ? 2.5 : (cur.pen ? 4 : 12);
+        if (reach(cur) < tol) pi++;
+        else break;
+      }
       const p = path[pi];
-      penDown = p.pen;
-      pi = Math.min(pi + (p.pen ? 1 : 3), path.length - 1);
-      if (pi >= path.length - 1){ mode = 'hold'; holdT = performance.now(); penDown = false; }
+      penDown = p.pen && reach(p) < 16;
+      if (pi >= path.length - 1 && reach(p) < 8){ mode = 'hold'; holdT = performance.now(); penDown = false; }
       return { x: p.x, y: p.y };
     }
     penDown = false;
@@ -1223,10 +1230,11 @@ document.querySelectorAll('video').forEach(v=>{
     const b = base();
     const t = nextTarget();
     const [q1, q2] = ik(t.x, t.y);
-    const k = mode === 'write' ? 0.34 : 0.14;
+    const k = mode === 'write' ? 0.45 : 0.14;
     a1 = lerpAngle(a1, q1, k); a2 = lerpAngle(a2, q2, k);
     const j = { x: b.x + L1*Math.cos(a1), y: b.y + L1*Math.sin(a1) };
     const e = { x: j.x + L2*Math.cos(a1 + a2), y: j.y + L2*Math.sin(a1 + a2) };
+    lastE = e;
     if (mode === 'write'){
       if (penDown && lastPen) ink.push({ x0: lastPen.x, y0: lastPen.y, x1: e.x, y1: e.y });
       lastPen = penDown ? { x: e.x, y: e.y } : null;
