@@ -50,8 +50,14 @@ def main() -> int:
     require("b.dataset.key = key;" in index, "project filter buttons must expose stable dataset.key", failures)
     require("document.addEventListener('play'" in index and "}, true);" in index, "video analytics must bind to captured play events", failures)
     require("arm/write" not in index, "branch-only arm/write analytics must not be present", failures)
-    require(index.count("var CODE = '';") == 1, "index analytics must be dormant with exactly one blank CODE", failures)
-    require(not_found.count("var CODE = '';") == 1, "404 analytics must be dormant with exactly one blank CODE", failures)
+    code_pattern = re.compile(r"var CODE = '([a-z0-9-]*)';")
+    index_codes = code_pattern.findall(index)
+    not_found_codes = code_pattern.findall(not_found)
+    require(len(index_codes) == 1, "index analytics must define exactly one CODE", failures)
+    require(len(not_found_codes) == 1, "404 analytics must define exactly one CODE", failures)
+    if len(index_codes) == 1 and len(not_found_codes) == 1:
+        require(index_codes[0] == not_found_codes[0], "index and 404 analytics CODE values must match", failures)
+        require(index_codes[0] == "austinhuang823", "production analytics CODE must be austinhuang823", failures)
     require("section/" in index and "session/engaged/" in index, "section and whole-page event families must be present", failures)
     for threshold in ("[3000,'3s']", "[10000,'10s']", "[30000,'30s']", "[60000,'60s']", "[120000,'120s']"):
         require(threshold in index, f"missing tracker threshold {threshold}", failures)

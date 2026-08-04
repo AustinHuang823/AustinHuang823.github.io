@@ -32,7 +32,11 @@ To choose another output path:
 python3 tools/analytics/generate_report.py --sample --output .analytics-private/demo.html
 ```
 
-## Activate collection
+## Collection status
+
+Production collection is active with the public GoatCounter site code `austinhuang823` in both `index.html` and `404.html`.
+
+## Activate or change collection
 
 1. Create a GoatCounter site.
 2. Copy only its public site code—the prefix from `your-code.goatcounter.com`.
