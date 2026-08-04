@@ -23,5 +23,28 @@ a:hover{background:#5cf0d3}
   <p>This page is outside the workspace. The manipulator can't reach it — but the homepage is well within joint limits.</p>
   <a href="/">Back to austinhuang823.github.io</a>
 </div>
+<script>
+// Privacy-gated GoatCounter 404 pageview. Keep CODE aligned with index.html.
+(function(){
+  'use strict';
+  var CODE = '';
+  var TEST = window.__attentionAnalyticsTest || null;
+  var testSink = TEST && typeof TEST.sink === 'function' ? TEST.sink : null;
+  if (!CODE && !testSink) return;
+  if (location.hostname !== 'austinhuang823.github.io' && !testSink) return;
+  if (navigator.doNotTrack === '1' || window.doNotTrack === '1' || navigator.msDoNotTrack === '1' || navigator.globalPrivacyControl || navigator.webdriver) return;
+  var hit = {path:'/404', event:false, at:Date.now()};
+  if (testSink){ testSink(hit); return; }
+  var query = [
+    'p=' + encodeURIComponent(hit.path),
+    't=' + encodeURIComponent(document.title),
+    'r=' + encodeURIComponent(document.referrer),
+    's=' + encodeURIComponent(innerWidth + ',' + innerHeight + ',' + (devicePixelRatio || 1)),
+    'rnd=' + hit.at
+  ];
+  var pixel = new Image();
+  pixel.src = 'https://' + CODE + '.goatcounter.com/count?' + query.join('&');
+})();
+</script>
 </body>
 </html>
