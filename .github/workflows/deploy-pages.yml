@@ -1,0 +1,47 @@
+# Publishes the site to GitHub Pages from a release asset, so the generated images and videos never
+# go into Git. `npm run deploy` (scripts/deploy.mjs) builds dist-public/ on Austin's Mac, attaches it
+# to a release as site.tar.gz, and starts this workflow on main.
+name: Deploy site
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag whose site.tar.gz to publish (empty = latest release)
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Download the built site
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          if [ -n "$TAG" ]; then
+            gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern site.tar.gz
+          else
+            gh release download --repo "$GITHUB_REPOSITORY" --pattern site.tar.gz
+          fi
+          mkdir _site
+          tar -xzf site.tar.gz -C _site
+          test -f _site/index.html && test -f _site/404.html
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
