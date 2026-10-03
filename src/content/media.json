@@ -1,0 +1,140 @@
+{
+ "_readme": "One entry per image the site uses; see README.md, \"Adding or replacing material\".",
+ "vrpelvisim/or": {
+  "project": "vrpelvisim",
+  "source": {
+   "file": "vrpelvisim/v_own_vr-or-multiuser-native-crop-01.png"
+  },
+  "kind": "render",
+  "rights": "own",
+  "credit": "VRPelviSim team (Austin Huang, Danny Chang), JHU",
+  "holder": "VRPelviSim team",
+  "caption": "The virtual operating room, shared: two users as avatars around the C-arm, with live DeepDRR radiographs beside it.",
+  "alt": "Virtual operating room: two collaborators shown as cube-head avatars beside a mobile C-arm over a CT-derived patient model, with two simulated X-ray panels floating beside it"
+ },
+ "vrpelvisim/team": {
+  "project": "about",
+  "source": {
+   "file": "about/own_vrpelvisim-team-with-mentors-01.jpg"
+  },
+  "kind": "photo",
+  "rights": "own",
+  "credit": "VRPelviSim team, JHU",
+  "holder": "VRPelviSim team",
+  "caption": "With my teammate and our mentors at the CIS II showcase, recognized as a CISST ERC Best Project Award finalist.",
+  "alt": "Four people standing in front of the VRPelviSim poster and a display at the CIS II showcase, two of them holding certificates"
+ },
+ "ur5/setup": {
+  "project": "ur5-manipulation",
+  "source": {
+   "file": "ur5-manipulation/deck_ur5-pick-and-drop-setup-01.png"
+  },
+  "kind": "photo",
+  "rights": "own",
+  "credit": "Photo: Austin Huang",
+  "holder": "Austin Huang",
+  "caption": "The UR5 on the bench at Johns Hopkins.",
+  "alt": "A UR5 robot arm on a wooden lab bench next to a window, with a pen fixture and a box marked ROBOTO"
+ },
+ "clashbots/robot": {
+  "project": "clash-bots",
+  "source": {
+   "file": "clash-bots/deck_robot-after-battle-01.jpg"
+  },
+  "kind": "photo",
+  "rights": "own",
+  "credit": "Photo: Austin Huang",
+  "holder": "Austin Huang",
+  "caption": "旋风小子 back from the arena: welded tube-truss chassis, chain-driven spinner and contactor-switched motors.",
+  "alt": "The combat robot back in the workshop after a fight: a welded tube-truss box chassis, chain drive, motors and orange wiring on pneumatic wheels"
+ },
+ "sfm/medusa": {
+  "project": "sfm-reconstruction",
+  "source": {
+   "file": "sfm-reconstruction/own_sfm-medusa-3d-reconstruction-01.png"
+  },
+  "kind": "figure",
+  "rights": "own",
+  "credit": "Austin Huang, JHU Machine Perception",
+  "holder": "Austin Huang and Iou-Sheng",
+  "caption": "Sparse 3D structure recovered from video of a carved Medusa head (Tomasi–Kanade factorization).",
+  "alt": "Two plots of a sparse 3D point cloud reconstructed from a video of a carved Medusa head"
+ },
+ "about/portrait": {
+  "project": "about",
+  "source": {
+   "file": "about/own_ai-headshot-blue-shirt-01.jpg"
+  },
+  "kind": "portrait",
+  "rights": "own",
+  "credit": "Austin Huang",
+  "holder": "Austin Huang",
+  "alt": "Portrait of Austin Huang in a light blue shirt and glasses"
+ },
+ "navigation/bone": {
+  "project": "surgical-navigation",
+  "source": {
+   "file": "surgical-navigation/r2_own_cis-icp-bone-mesh-registration-render-01.png"
+  },
+  "kind": "render",
+  "rights": "own",
+  "credit": "Austin Huang and Danny Chang, JHU CIS I",
+  "holder": "Austin Huang",
+  "caption": "ICP registration on the femur: sample points from six datasets matched to the bone surface (results rendered on the course mesh).",
+  "alt": "Render of a proximal femur surface mesh on a dark background, dotted with teal points registered to its surface by ICP"
+ },
+ "hololens/demo": {
+  "project": "hololens-fov",
+  "source": {
+   "video": "hololens-fov/own_hololens-demo-master-01.mp4",
+   "start": 28.5,
+   "end": 57
+  },
+  "kind": "video",
+  "max_width": 720,
+  "crf": 28,
+  "rights": "own",
+  "credit": "AR Project 16 (Joyraj Bhowmick, Austin Huang, Yu-Chun Ku), JHU",
+  "holder": "Austin Huang with AR Project 16",
+  "caption": "The radar mini-map tracking ArUco-marked objects inside and outside the headset's field of view.",
+  "alt": "HoloLens radar mini-map tracking objects outside the field of view",
+  "name": "perception_demo"
+ },
+ "ur5/drawing-clip": {
+  "project": "ur5-manipulation",
+  "source": {
+   "file": "ur5-manipulation/gh_ur5-drawing-jhu-logo-demo-01.gif"
+  },
+  "kind": "video",
+  "max_width": 720,
+  "crf": 22,
+  "rights": "own",
+  "credit": "RDKDC Team 7, JHU",
+  "holder": "Austin Huang with RDKDC Group 7",
+  "caption": "The UR5 drawing the Johns Hopkins shield.",
+  "alt": "UR5 robot arm drawing the Johns Hopkins logo",
+  "name": "rdkdc_imagedrawing"
+ },
+ "segmentation/training": {
+  "project": "semantic-segmentation",
+  "source": {
+   "file": "semantic-segmentation/gh_segmentation-training-progress-01.gif"
+  },
+  "kind": "video",
+  "max_width": 992,
+  "crf": 22,
+  "rights": "own",
+  "credit": "JHU Computer Vision Team 9",
+  "holder": "Austin Huang with CV Team 9",
+  "caption": "Predictions sharpening over 50 training snapshots on a JHUStreet validation image.",
+  "alt": "Semantic segmentation inference improving across training epochs",
+  "name": "segmentation"
+ },
+ "_og": {
+  "media": "vrpelvisim/or",
+  "focus": [
+   0.5,
+   0.42
+  ]
+ }
+}

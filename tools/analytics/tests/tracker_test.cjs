@@ -7,7 +7,8 @@ const path = require('node:path');
 const vm = require('node:vm');
 
 const root = path.resolve(__dirname, '..', '..', '..');
-const index = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+// The page template; build.mjs only fills in its images and videos.
+const index = fs.readFileSync(path.join(root, 'src', 'site', 'index.html'), 'utf8');
 const marker = index.indexOf('// Attention analytics');
 const end = index.indexOf('</script>', marker);
 assert(marker >= 0 && end > marker, 'analytics block not found in index.html');

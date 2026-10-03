@@ -34,13 +34,13 @@ python3 tools/analytics/generate_report.py --sample --output .analytics-private/
 
 ## Collection status
 
-Production collection is active with the public GoatCounter site code `austinhuang823` in both `index.html` and `404.html`.
+Production collection is active with the public GoatCounter site code `austinhuang823` in both `src/site/index.html` and `src/site/404.html`.
 
 ## Activate or change collection
 
 1. Create a GoatCounter site.
 2. Copy only its public site code—the prefix from `your-code.goatcounter.com`.
-3. Set the `CODE` constant in both `index.html` and `404.html`.
+3. Set the `CODE` constant in both `src/site/index.html` and `src/site/404.html`.
 4. Deploy the reviewed change.
 5. Confirm the homepage and custom events appear in the private GoatCounter dashboard.
 
@@ -110,7 +110,7 @@ The homepage pageview is also deduplicated once per tab-scoped session, which ma
 
 ```sh
 python3 -m unittest discover -s tools/analytics/tests -v
-node tools/analytics/tests/tracker_test.js
+node tools/analytics/tests/tracker_test.cjs
 python3 tools/analytics/validate_site.py
 python3 tools/analytics/generate_report.py --sample
 ```

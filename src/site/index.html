@@ -43,7 +43,7 @@
     "https://github.com/AustinHuang823",
     "https://www.linkedin.com/in/chingyangh/"
   ],
-  "knowsAbout": ["Robotics", "Automation Systems", "Computer Vision", "Robot Calibration", "Simulation", "LLM Agents"]
+  "knowsAbout": ["Robotics", "Automation Systems", "Computer Vision", "Robot Calibration", "Simulation", "LLM Agents", "AI for Robot Operations"]
 }
 </script>
 <style>
@@ -247,6 +247,18 @@ section{padding:88px 0}
 @keyframes tblink{50%{opacity:0}}
 .depth-body img{border-radius:10px;border:1px solid var(--border);max-width:420px;height:auto}
 
+/* image credits and video wrappers (media comes from the materials pipeline, see README) */
+.credit{display:block;color:var(--faint);font-size:11.5px;line-height:1.45;letter-spacing:.2px}
+.card .media .credit{position:absolute;left:10px;bottom:10px;z-index:2;max-width:calc(100% - 66px);padding:3px 8px;border-radius:6px;background:var(--plate-bg);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:var(--muted);font-size:11px}
+.vid{position:relative}
+.card .media .vid{height:100%}
+.row-media .credit{padding:7px 12px 8px;border-top:1px solid var(--border)}
+.row-media img,.row-media video{height:auto}
+.row-media img{width:100%;max-height:360px;object-fit:contain;display:block}
+.row-media svg.schematic{width:100%;height:auto;display:block;background:var(--card2)}
+.depth-body .credit{margin-top:-6px}
+.about-card figcaption .credit{margin-top:3px;font-size:11.5px}
+
 /* expandable depth inside cards */
 .card details.depth{border-top:1px solid var(--border);margin-top:12px;padding-top:10px}
 .card details.depth summary{cursor:pointer;color:var(--accent);font-size:13.5px;font-weight:600}
@@ -333,6 +345,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
   .row-media{flex:none;max-width:100%}
   .depth-body img{max-width:100%}
   .media.gauge{gap:26px}
+  .card .media .credit{font-size:10.5px;padding:2px 7px;left:8px;bottom:8px}
 }
 </style>
 <script>try{if(localStorage.getItem('palette')==='heritage')document.documentElement.dataset.theme='heritage'}catch(e){}</script>
@@ -415,7 +428,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
           <li>Primary on-site system owner at <strong>a Fortune 500 pharma partner</strong>: raised FAT/SAT task pass rates <strong>59% → 100%</strong> under real operating constraints; developed an error model that raised the rate of application results landing within jointly agreed target ranges <strong>29% → 98%</strong> across hundreds of validation cases.</li>
           <li>Cut operational failures by <strong>94%</strong> through reliability engineering across task coordination, vision-guided manipulation, and failure handling — contributing to customer adoption and multi-million-dollar expansion.</li>
           <li>Developed a <strong>monocular contour-based calibration method</strong> for end-effector pose correction, validated in a custom MuJoCo simulation framework — outperforming the prior stereo-based approach with less hardware.</li>
-          <li>Building <strong>safety-gated LLM-agent tooling for automation operations</strong> — agent skill packages, diagnostics and validation workflows, and knowledge pipelines — used daily across internal engineering and operations, with its design shaped by the operating needs of a major pharmaceutical program.</li>
+          <li>Built an <strong>AI operations platform for robotic automation</strong>, now in use across XtalPi's automation departments: teams connect it to their robots for <strong>real-time error analysis</strong>, backed by a shared log service, a knowledge base, and diagnostics workflows, with safety gating on anything that acts on hardware.</li>
           <li>Own <strong>client-facing technical delivery</strong>: site-readiness engineering, acceptance-test evidence packages, upgrade roadmaps, and bilingual (English/Chinese) stakeholder communication.</li>
         </ul>
         <div class="chips"><span class="chip">ABB Robots</span><span class="chip">AGV / AMR</span><span class="chip">ROS 2</span><span class="chip">MuJoCo</span><span class="chip">OpenCV</span><span class="chip">LLM Agents</span><span class="chip">Python</span><span class="chip">C++</span></div>
@@ -507,31 +520,32 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
       </div>
 
       <div class="card reveal" data-tags="production agents">
-        <div class="media term" role="img" aria-label="Stylized console: an agent request passes the policy, role, preflight, token, and audit gates and is authorized; a second request without a confirmation token is blocked and the agent stays read-only">
+        <div class="media term" role="img" aria-label="Stylized console: a robot error pauses station B; the platform reads the live logs and similar past incidents and returns a likely cause and fix steps with evidence; an engineer asks how to recover the arm and gets an answer with sources, with hardware steps left for sign-off">
           <div class="term-box" aria-hidden="true" id="ops-term">
-            <div class="tl"><span class="pr">$ agent</span> prep station B for the next run</div>
-            <div class="tl">policy <span class="ok">✓</span> · role <span class="ok">✓</span> · preflight <span class="ok">✓</span> · token <span class="ok">✓</span> · audit <span class="ok">✓</span></div>
-            <div class="tl"><span class="ok">→ action authorized</span></div>
-            <div class="tl"><span class="pr">$ agent</span> retry — no confirmation token</div>
-            <div class="tl">policy <span class="ok">✓</span> · role <span class="ok">✓</span> · preflight <span class="ok">✓</span> · token <span class="no">✗</span></div>
-            <div class="tl"><span class="no">→ blocked — agent stays read-only</span></div>
+            <div class="tl"><span class="no">⚠ station B</span> · robot error · run paused</div>
+            <div class="tl">live logs <span class="ok">✓</span> · robot state <span class="ok">✓</span> · 3 similar incidents</div>
+            <div class="tl"><span class="ok">→ likely cause + fix steps, with evidence</span></div>
+            <div class="tl"><span class="pr">$ ask</span> how do we recover the arm on line 2?</div>
+            <div class="tl">knowledge base <span class="ok">✓</span> · 2 matching procedures</div>
+            <div class="tl"><span class="ok">→ answer with sources · hardware steps need sign-off</span></div>
           </div>
         </div>
         <div class="card-body">
-          <div class="card-meta">XtalPi · Internal daily use</div>
-          <h3>AI Operations Agent for Robotic Automation</h3>
-          <div class="impact">A safety-gated LLM agent helping engineers run a robotic chemistry lab</div>
-          <p>An AI assistant for a robotic high-throughput chemistry lab — read-only by default, with every real-world action gated behind five safety checks and a full audit trail. Built to production software standards: strict typing, 130+ automated tests behind an enforced coverage gate.</p>
+          <div class="card-meta">XtalPi · Used across automation departments</div>
+          <h3>AI Operations Platform for Robotic Automation</h3>
+          <div class="impact">Adopted across XtalPi's automation departments; teams wire it to their robots for real-time error analysis</div>
+          <p>An LLM layer over the automation stack. Teams connect their robots to it, and when something fails it reads the live logs, pulls matching incidents and procedures from a shared knowledge base, and explains what went wrong and what to do next, with the evidence attached.</p>
           <details class="depth" data-pid="ai-operations-agent-safety">
-            <summary>Inside the safety design</summary>
+            <summary>Inside the system</summary>
             <div class="depth-body">
-              <p><strong>The five gates.</strong> A real-world action executes only with a registered policy, an authorized engineer role, a passing preflight, an exact confirmation token, and an audit record — miss any one and the agent stays read-only.</p>
-              <p><strong>The learning loop.</strong> Engineer-reviewed incident root-causes feed back into automatic preflight checks, so the same failure class can't slip through twice.</p>
-              <p><strong>Evidence-first answers.</strong> Responses cite hash-verifiable evidence artifacts, backed by a knowledge pipeline that ingests engineering docs with preview-first, human-approved promotion. 42 documented capabilities.</p>
+              <p><strong>Real-time error analysis.</strong> Robots and stations report errors as they happen. The platform reads the surrounding logs, matches them against past incidents, and returns a likely cause and next steps, so engineers start from an answer instead of a raw log.</p>
+              <p><strong>Shared knowledge.</strong> A log service and a knowledge base built from engineering docs and engineer-reviewed root causes, promoted preview-first with human approval. Answers cite their sources, and a failure that has been diagnosed once is recognized the next time.</p>
+              <p><strong>Safe by default.</strong> It reads freely; anything that acts on hardware goes through gated, audited steps (policy, role, preflight, explicit confirmation).</p>
+              <p><strong>Production software.</strong> 42 documented capabilities, strict typing, and 130+ automated tests behind an enforced coverage gate.</p>
             </div>
           </details>
-          <div class="chips"><span class="chip">LLM Agents</span><span class="chip">Agentic Workflows</span><span class="chip">Knowledge Pipelines</span><span class="chip">Python</span><span class="chip">mypy --strict</span><span class="chip">SQLite FTS5</span><span class="chip">CI/CD</span></div>
-          <div class="links"><a href="mailto:chuan120@alumni.jh.edu?subject=AI%20Operations%20Agent" aria-label="Email me about the AI Operations Agent">Proprietary — ask for a walkthrough</a></div>
+          <div class="chips"><span class="chip">LLM Agents</span><span class="chip">Real-Time Error Analysis</span><span class="chip">Log Service</span><span class="chip">Knowledge Base</span><span class="chip">Agentic Workflows</span><span class="chip">Python</span><span class="chip">mypy --strict</span><span class="chip">SQLite FTS5</span><span class="chip">CI/CD</span></div>
+          <div class="links"><a href="mailto:chuan120@alumni.jh.edu?subject=AI%20Operations%20Platform" aria-label="Email me about the AI operations platform">Proprietary — ask for a walkthrough</a></div>
         </div>
       </div>
 
@@ -552,7 +566,8 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
       <div class="card reveal" data-tags="medical">
         <div class="media">
           <span class="corner-badge badge gold">Best Project Award Finalist · CISST ERC</span>
-          <img src="assets/img/VRPelviSim.jpeg" alt="VRPelviSim virtual operating room environment" width="1200" height="748" loading="lazy">
+          <x-media id="vrpelvisim/or" sizes="(max-width: 900px) calc(100vw - 48px), 513px" alt="VRPelviSim virtual operating room environment"></x-media>
+          <x-credit id="vrpelvisim/or"></x-credit>
         </div>
         <div class="card-body">
           <div class="card-meta">JHU Research · 2024</div>
@@ -567,7 +582,8 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
       <div class="card reveal" data-tags="hardware">
         <div class="media">
           <span class="corner-badge badge gold">1B+ cumulative views</span>
-          <video controls muted loop playsinline preload="none" poster="assets/media/clashbots_poster.jpg" src="assets/media/clashbots.mp4" aria-label="Clash Bots combat robot competing on the streaming series"></video>
+          <x-media id="clashbots/robot" sizes="(max-width: 900px) calc(100vw - 48px), 513px" position="50% 55%" alt="The combat robot's welded chassis and wheels, back from the arena"></x-media>
+          <x-credit id="clashbots/robot"></x-credit>
         </div>
         <div class="card-body">
           <div class="card-meta">iQIYI · 2017–18</div>
@@ -577,7 +593,6 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
           <details class="depth" data-pid="clash-bots-build">
             <summary>Inside the build — post-battle</summary>
             <div class="depth-body">
-              <img src="assets/img/clashbots_build.jpg" alt="Welded steel chassis of the combat robot with drive chains, motors, and wiring exposed" width="1200" height="1600" loading="lazy">
               <p>Back from the arena after a fight — welded chassis, chain drive, and contactor-switched motors, battle-worn but holding together. Designed, built, and wired by the team.</p>
             </div>
           </details>
@@ -622,7 +637,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
             <div class="chips"><span class="chip">ROS</span><span class="chip">MATLAB</span><span class="chip">Kinematics</span></div>
             <div class="links"><a href="https://github.com/AustinHuang823/Robot-Arm-Control-and-Image-Drawing-Manipulation-public" target="_blank" rel="noopener">Code &amp; report</a></div>
           </div>
-            <div class="row-media"><video controls muted loop playsinline preload="none" poster="assets/media/rdkdc_imagedrawing_poster.jpg" src="assets/media/rdkdc_imagedrawing.mp4" aria-label="UR5 robot arm drawing the Johns Hopkins logo"></video></div>
+            <div class="row-media"><x-media id="ur5/drawing-clip" aria-label="UR5 robot arm drawing the Johns Hopkins logo"></x-media><x-credit id="ur5/drawing-clip"></x-credit></div>
         </div>
       </details>
       <details class="proj-row reveal" data-tags="hardware perception" data-pid="ur5-manipulation">
@@ -633,6 +648,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
             <div class="chips"><span class="chip">ROS</span><span class="chip">MATLAB</span><span class="chip">C++</span><span class="chip">RRT</span></div>
             <div class="links"><a href="mailto:chuan120@alumni.jh.edu?subject=Sensor-Based%20UR5%20Manipulation" aria-label="Email me about sensor-based UR5 manipulation">Ask me about it</a></div>
           </div>
+            <div class="row-media"><x-media id="ur5/setup" sizes="(max-width: 900px) calc(100vw - 86px), 300px" alt="A UR5 robot arm on a lab bench with a pen fixture and a parts bin"></x-media><x-credit id="ur5/setup"></x-credit></div>
         </div>
       </details>
       <details class="proj-row reveal" data-tags="medical perception" data-pid="hololens-perception">
@@ -643,7 +659,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
             <div class="chips"><span class="chip">Unity</span><span class="chip">C#</span><span class="chip">ArUco</span><span class="chip">HoloLens 2</span></div>
             <div class="links"><a href="https://github.com/AustinHuang823/Increase-Human-FoV-Using-Hololens" target="_blank" rel="noopener">Code</a></div>
           </div>
-            <div class="row-media"><video controls muted loop playsinline preload="none" poster="assets/media/perception_demo_poster.jpg" src="assets/media/perception_demo.mp4" aria-label="HoloLens radar mini-map tracking objects outside the field of view"></video></div>
+            <div class="row-media"><x-media id="hololens/demo" aria-label="HoloLens radar mini-map tracking objects outside the field of view"></x-media><x-credit id="hololens/demo"></x-credit></div>
         </div>
       </details>
       <details class="proj-row reveal" data-tags="perception" data-pid="semantic-segmentation">
@@ -654,7 +670,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
             <div class="chips"><span class="chip">PyTorch</span><span class="chip">DeepLabv3+</span><span class="chip">Python</span></div>
             <div class="links"><a href="https://github.com/AustinHuang823/Transfer-Learning-in-Semantic-Segmentation" target="_blank" rel="noopener">Code</a><a href="https://github.com/AustinHuang823/Transfer-Learning-in-Semantic-Segmentation/blob/main/EN_601_661_Team9-Final_Writeup.pdf" target="_blank" rel="noopener">Report (PDF)</a></div>
           </div>
-            <div class="row-media"><video controls muted loop playsinline preload="none" poster="assets/media/segmentation_poster.jpg" src="assets/media/segmentation.mp4" aria-label="Semantic segmentation inference improving across training epochs"></video></div>
+            <div class="row-media"><x-media id="segmentation/training" aria-label="Semantic segmentation inference improving across training epochs"></x-media><x-credit id="segmentation/training"></x-credit></div>
         </div>
       </details>
       <details class="proj-row reveal" data-tags="medical" data-pid="stereotactic-navigation">
@@ -665,6 +681,45 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
             <div class="chips"><span class="chip">Python</span><span class="chip">Registration</span><span class="chip">Pivot Calibration</span></div>
             <div class="links"><a href="https://github.com/AustinHuang823/Calibration-and-Distortion-Correction-in-Stereotactic-Navigation-public" target="_blank" rel="noopener">Code &amp; report</a></div>
           </div>
+            <div class="row-media"><svg class="schematic" viewBox="0 0 600 440" role="img" aria-label="Schematic of electromagnetic surgical navigation: a tracker base, a tracked pointer touching a CT-imaged bone on a workspace with fiducial posts, and the frames F_reg and F_ptr; the pointer tip position p_tip is the unknown to solve for, inside a distorted field">
+              <g style="fill:none;stroke:var(--border2);stroke-width:1.5">
+                <path d="M70 380 L430 380 L550 270 L190 270 Z" style="fill:var(--card2);fill-opacity:.55"/>
+                <path d="M100 353 Q300 340 460 353"/><path d="M130 325 Q320 312 490 325"/><path d="M160 298 Q340 285 520 298"/>
+                <path d="M160 380 Q240 320 280 270"/><path d="M250 380 Q330 322 370 270"/><path d="M340 380 Q420 322 460 270"/>
+              </g>
+              <g style="fill:var(--card);stroke:var(--muted);stroke-width:2">
+                <rect x="96" y="318" width="14" height="40" rx="3"/><rect x="470" y="262" width="14" height="40" rx="3"/><rect x="392" y="330" width="14" height="40" rx="3"/>
+              </g>
+              <path d="M188 322 C176 300 194 284 214 292 C246 304 300 300 338 288 C356 270 386 276 386 296 C392 318 370 330 352 322 C312 334 254 336 214 330 C200 342 182 338 188 322 Z" style="fill:var(--muted);fill-opacity:.28;stroke:var(--muted);stroke-width:2"/>
+              <g style="stroke:var(--accent);stroke-width:3;stroke-linecap:round">
+                <path d="M224 318 L266 318"/><path d="M224 318 L224 280"/><path d="M224 318 L200 340"/>
+              </g>
+              <text x="152" y="282" style="fill:var(--accent);font:600 21px ui-monospace,SFMono-Regular,Menlo,monospace">CT</text>
+              <g>
+                <rect x="430" y="34" width="130" height="78" rx="12" style="fill:var(--card);stroke:var(--accent-dim);stroke-width:2"/>
+                <g style="fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round;opacity:.85">
+                  <path d="M478 73 a17 17 0 0 1 34 0"/><path d="M468 73 a27 27 0 0 1 54 0"/><path d="M458 73 a37 37 0 0 1 74 0"/>
+                </g>
+                <circle cx="495" cy="73" r="5" style="fill:var(--accent)"/>
+                <text x="495" y="142" text-anchor="middle" style="fill:var(--muted);font:500 19px ui-monospace,SFMono-Regular,Menlo,monospace">EM tracker</text>
+              </g>
+              <g style="stroke-linecap:round">
+                <path d="M356 92 L330 168" style="stroke:var(--text);stroke-width:16;opacity:.85"/>
+                <path d="M330 168 L306 282" style="stroke:var(--text);stroke-width:4"/>
+                <circle cx="350" cy="108" r="4.5" style="fill:var(--card)"/><circle cx="344" cy="126" r="4.5" style="fill:var(--card)"/><circle cx="338" cy="144" r="4.5" style="fill:var(--card)"/>
+              </g>
+              <circle cx="306" cy="284" r="8" style="fill:var(--gold)"/>
+              <g style="fill:none;stroke-width:2.2;stroke-dasharray:7 7">
+                <path d="M436 100 C360 170 300 250 230 312" style="stroke:var(--accent)"/>
+                <path d="M432 70 C410 70 384 82 362 98" style="stroke:var(--accent)"/>
+                <path d="M327 150 L310 270" style="stroke:var(--gold)"/>
+              </g>
+              <text x="372" y="218" style="fill:var(--accent);font:600 21px ui-monospace,SFMono-Regular,Menlo,monospace">F_reg</text>
+              <text x="352" y="54" style="fill:var(--accent);font:600 21px ui-monospace,SFMono-Regular,Menlo,monospace">F_ptr</text>
+              <text x="200" y="232" style="fill:var(--gold);font:600 21px ui-monospace,SFMono-Regular,Menlo,monospace">p_tip = ?</text>
+              <path d="M286 238 L301 268" style="stroke:var(--gold);stroke-width:2;fill:none"/>
+              <text x="48" y="420" style="fill:var(--faint);font:500 17px ui-monospace,SFMono-Regular,Menlo,monospace">field distortion · pivot calibration · registration</text>
+            </svg><span class="credit">Schematic drawn for this site</span></div>
         </div>
       </details>
       <details class="proj-row reveal" data-tags="perception" data-pid="structure-from-motion">
@@ -675,6 +730,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
             <div class="chips"><span class="chip">Python</span><span class="chip">OpenCV</span><span class="chip">SfM</span></div>
             <div class="links"><a href="https://github.com/AustinHuang823/Video-Content-3D-Model-Rebuilt-App" target="_blank" rel="noopener">Code</a></div>
           </div>
+            <div class="row-media"><x-media id="sfm/medusa" sizes="(max-width: 900px) calc(100vw - 86px), 300px"></x-media><x-credit id="sfm/medusa"></x-credit></div>
         </div>
       </details>
       <details class="proj-row reveal" data-tags="medical perception" data-pid="iterative-closest-point">
@@ -685,6 +741,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
             <div class="chips"><span class="chip">Python</span><span class="chip">NumPy</span><span class="chip">SciPy</span><span class="chip">Plotly</span></div>
             <div class="links"><a href="https://github.com/AustinHuang823/Iterative-Closest-Point-Algorithm-for-3D-Surface-Matching-public" target="_blank" rel="noopener">Code &amp; report</a></div>
           </div>
+            <div class="row-media"><x-media id="navigation/bone" sizes="(max-width: 900px) calc(100vw - 86px), 300px"></x-media><x-credit id="navigation/bone"></x-credit></div>
         </div>
       </details>
     </div>
@@ -712,7 +769,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
       </div>
       <div class="skill-group reveal">
         <h3>AI &amp; Agentic Systems</h3>
-        <div class="chips"><span class="chip">LLM Agents</span><span class="chip">Agentic Workflow Design</span><span class="chip">Tool-Use &amp; Function-Calling Design</span><span class="chip">Safety Gating &amp; Guardrails</span><span class="chip">Eval &amp; Test Harnesses</span><span class="chip">Knowledge Pipelines</span><span class="chip">Multi-Agent Orchestration</span></div>
+        <div class="chips"><span class="chip">LLM Agents</span><span class="chip">Real-Time Error Analysis</span><span class="chip">Knowledge Bases &amp; Retrieval</span><span class="chip">Log Analytics</span><span class="chip">Agentic Workflow Design</span><span class="chip">Tool-Use &amp; Function-Calling Design</span><span class="chip">Eval &amp; Test Harnesses</span><span class="chip">Multi-Agent Orchestration</span><span class="chip">Guardrails &amp; Safety Gating</span></div>
       </div>
       <div class="skill-group reveal">
         <h3>Software &amp; Mechanical</h3>
@@ -732,16 +789,17 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
       <div class="about-text reveal">
         <p>I started in mechanical engineering at <strong>National Taiwan University</strong>, then spent my early career with my hands on hardware — building <strong>a combat robot</strong> for a streaming series that surpassed one billion cumulative views and engineering surgical camera systems that had to survive drops, dust, and operating rooms.</p>
         <p>After Dynacolor, I completed my national service in Taiwan and prepared for graduate school. Wanting to close the loop between mechanism and intelligence, I then earned my <strong>M.S.E. in Robotics at Johns Hopkins</strong> (GPA 3.9), working on medical robotics at LCSR under <a href="https://engineering.jhu.edu/faculty/russell-taylor/" target="_blank" rel="noopener">Russell H. Taylor</a> and lab automation at the NIH.</p>
-        <p>Today at <strong>XtalPi</strong> I'm the primary technical owner for automation across U.S. operations — production deployments where a robot that "usually works" isn't good enough, and the <strong>AI-agent layer</strong> that helps engineers operate those systems. The common thread: I'm happiest at the boundary where mechanical design, perception, software, and AI meet — and I've shipped work in all four.</p>
+        <p>Today at <strong>XtalPi</strong> I'm the primary technical owner for automation across U.S. operations — production deployments where a robot that "usually works" isn't good enough, and the <strong>AI operations platform</strong> that teams across XtalPi's automation departments now use to diagnose and run those systems. The common thread: I'm happiest at the boundary where mechanical design, perception, software, and AI meet — and I've shipped work in all four.</p>
         <p>I also build <em>with</em> AI the way I build robots: orchestrated multi-agent development workflows — parallel branches with cross-model review gates, strict typing, and enforced test coverage before anything merges. The same discipline I apply to hardware, applied to the agents that help run it.</p>
       </div>
       <div class="about-side reveal">
         <figure class="about-card">
-          <img src="assets/img/austin.jpg" alt="Portrait of Austin Huang" width="880" height="1100" loading="lazy">
+          <x-media id="about/portrait" sizes="(max-width: 900px) min(440px, calc(100vw - 48px)), 350px" alt="Portrait of Austin Huang"></x-media>
+          <figcaption><x-credit id="about/portrait"></x-credit></figcaption>
         </figure>
         <figure class="about-card">
-          <img src="assets/img/VRPelviSim_Team_wMentors.jpeg" alt="VRPelviSim team with mentors at Johns Hopkins" width="1280" height="960" loading="lazy">
-          <figcaption>With the VRPelviSim team and mentors — CISST ERC, Johns Hopkins</figcaption>
+          <x-media id="vrpelvisim/team" sizes="(max-width: 900px) min(440px, calc(100vw - 48px)), 350px" alt="VRPelviSim team with mentors at Johns Hopkins"></x-media>
+          <figcaption>With the VRPelviSim team and mentors — CISST ERC, Johns Hopkins <x-credit id="vrpelvisim/team"></x-credit></figcaption>
         </figure>
       </div>
     </div>

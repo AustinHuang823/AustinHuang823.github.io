@@ -1,0 +1,19 @@
+{
+  "name": "austinhuang823-portfolio",
+  "private": true,
+  "type": "module",
+  "description": "Austin Huang's portfolio in the live site's design. No npm dependencies: Node builds the page; Python (Pillow + PyMuPDF) and ffmpeg make the images and videos.",
+  "scripts": {
+    "sources": "python3 scripts/sources.py",
+    "register": "python3 scripts/register.py",
+    "media": "python3 scripts/media.py",
+    "dev": "node serve.mjs",
+    "build": "node build.mjs",
+    "build:public": "node build.mjs --public",
+    "shoot": "node --experimental-websocket scripts/shoot.mjs",
+    "deploy": "node scripts/deploy.mjs"
+  },
+  "engines": {
+    "node": ">=18.17"
+  }
+}

@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://austinhuang823.github.io/sitemap.xml

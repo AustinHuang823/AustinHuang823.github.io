@@ -10,8 +10,9 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-INDEX = ROOT / "index.html"
-NOT_FOUND = ROOT / "404.html"
+# The page templates (build.mjs only fills in their images and videos).
+INDEX = ROOT / "src" / "site" / "index.html"
+NOT_FOUND = ROOT / "src" / "site" / "404.html"
 
 
 class StructureParser(HTMLParser):
