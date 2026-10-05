@@ -57,7 +57,7 @@
   "max_width": 720,
   "crf": 26,
   "rights": "own",
-  "credit": "Reconstruction: Austin Huang, JHU Machine Perception · input sequence: Pollefeys et al., KU Leuven",
+  "credit": "3D reconstruction: Austin Huang and Danny Chang, JHU Machine Perception · input data: Medusa sequence (Pollefeys et al., KU Leuven)",
   "holder": "Austin Huang and Iou-Sheng (Danny) Chang",
   "caption": "The tracked 3D points, the mesh built from them and the dense surface recovered from a video of a carved Medusa head (Tomasi–Kanade factorization with perspective refinement).",
   "alt": "A 3D reconstruction of a carved Medusa head on a stone slab: tracked points, a wireframe mesh spreading across them, then the shaded surface turning to show its relief",
