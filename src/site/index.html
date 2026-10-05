@@ -428,7 +428,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
           <li>Primary on-site system owner at <strong>a Fortune 500 pharma partner</strong>: raised FAT/SAT task pass rates <strong>59% → 100%</strong> under real operating constraints; developed an error model that raised the rate of application results landing within jointly agreed target ranges <strong>29% → 98%</strong> across hundreds of validation cases.</li>
           <li>Cut operational failures by <strong>94%</strong> through reliability engineering across task coordination, vision-guided manipulation, and failure handling — contributing to customer adoption and multi-million-dollar expansion.</li>
           <li>Developed a <strong>monocular contour-based calibration method</strong> for end-effector pose correction, validated in a custom MuJoCo simulation framework — outperforming the prior stereo-based approach with less hardware.</li>
-          <li>Built an <strong>AI operations platform for robotic automation</strong>, now in use across XtalPi's automation departments: teams connect it to their robots for <strong>real-time error analysis</strong>, backed by a shared log service, a knowledge base, and diagnostics workflows, with safety gating on anything that acts on hardware.</li>
+          <li>Lead the architecture and development of XtalPi's <strong>AI operations platform</strong>, which brings live robot telemetry, execution logs, and engineering knowledge into shared operational context for <strong>LLM agents</strong> across automation teams: live troubleshooting, postmortem root-cause analysis, and preflight validation, with safety gating on anything that acts on hardware.</li>
           <li>Own <strong>client-facing technical delivery</strong>: site-readiness engineering, acceptance-test evidence packages, upgrade roadmaps, and bilingual (English/Chinese) stakeholder communication.</li>
         </ul>
         <div class="chips"><span class="chip">ABB Robots</span><span class="chip">AGV / AMR</span><span class="chip">ROS 2</span><span class="chip">MuJoCo</span><span class="chip">OpenCV</span><span class="chip">LLM Agents</span><span class="chip">Python</span><span class="chip">C++</span></div>
@@ -533,13 +533,14 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
         <div class="card-body">
           <div class="card-meta">XtalPi · Used across automation departments</div>
           <h3>AI Operations Platform for Robotic Automation</h3>
-          <div class="impact">Adopted across XtalPi's automation departments; teams wire it to their robots for real-time error analysis</div>
-          <p>An LLM layer over the automation stack. Teams connect their robots to it, and when something fails it reads the live logs, pulls matching incidents and procedures from a shared knowledge base, and explains what went wrong and what to do next, with the evidence attached.</p>
+          <div class="impact">Used across XtalPi's automation teams for live troubleshooting, postmortem root-cause analysis, and preflight validation</div>
+          <p>Shared operational context for LLM agents. The platform brings live robot telemetry, execution logs, and engineering knowledge together, so agents can correlate robot, workflow, and resource state and turn operational evidence into a diagnosis and next steps, with the evidence attached.</p>
           <details class="depth" data-pid="ai-operations-agent-safety">
             <summary>Inside the system</summary>
             <div class="depth-body">
-              <p><strong>Real-time error analysis.</strong> Robots and stations report errors as they happen. The platform reads the surrounding logs, matches them against past incidents, and returns a likely cause and next steps, so engineers start from an answer instead of a raw log.</p>
-              <p><strong>Shared knowledge.</strong> A log service and a knowledge base built from engineering docs and engineer-reviewed root causes, promoted preview-first with human approval. Answers cite their sources, and a failure that has been diagnosed once is recognized the next time.</p>
+              <p><strong>Live troubleshooting.</strong> When a robot or station fails mid-run, agents read the telemetry and surrounding logs, correlate robot, workflow, and resource state, and return a likely cause and next steps, so engineers start from an answer instead of a raw log.</p>
+              <p><strong>Postmortems that compound.</strong> Root-cause analyses become reusable knowledge, engineer-reviewed and promoted preview-first with human approval. Answers cite their sources, and a failure that has been diagnosed once is recognized the next time.</p>
+              <p><strong>Preflight validation.</strong> What past failures taught becomes automated checks that run before a job starts.</p>
               <p><strong>Safe by default.</strong> It reads freely; anything that acts on hardware goes through gated, audited steps (policy, role, preflight, explicit confirmation).</p>
               <p><strong>Production software.</strong> 42 documented capabilities, strict typing, and 130+ automated tests behind an enforced coverage gate.</p>
             </div>
