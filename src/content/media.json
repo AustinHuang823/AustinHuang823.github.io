@@ -48,17 +48,20 @@
   "caption": "旋风小子 back from the arena: welded tube-truss chassis, chain-driven spinner and contactor-switched motors.",
   "alt": "The combat robot back in the workshop after a fight: a welded tube-truss box chassis, chain drive, motors and orange wiring on pneumatic wheels"
  },
- "sfm/medusa": {
+ "sfm/medusa-mesh": {
   "project": "sfm-reconstruction",
   "source": {
-   "file": "sfm-reconstruction/own_sfm-medusa-3d-reconstruction-01.png"
+   "video": "sfm-reconstruction/own_sfm-medusa-mesh-turntable-01.mp4"
   },
-  "kind": "figure",
+  "kind": "video",
+  "max_width": 720,
+  "crf": 26,
   "rights": "own",
-  "credit": "Austin Huang, JHU Machine Perception",
+  "credit": "Austin Huang, JHU Machine Perception · source video: Pollefeys et al., KU Leuven",
   "holder": "Austin Huang and Iou-Sheng",
-  "caption": "Sparse 3D structure recovered from video of a carved Medusa head (Tomasi–Kanade factorization).",
-  "alt": "Two plots of a sparse 3D point cloud reconstructed from a video of a carved Medusa head"
+  "caption": "The tracked 3D points, the mesh built from them and the dense surface recovered from a video of a carved Medusa head (Tomasi–Kanade factorization with perspective refinement).",
+  "alt": "A 3D reconstruction of a carved Medusa head on a stone slab: tracked points, a wireframe mesh spreading across them, then the shaded surface turning to show its relief",
+  "name": "sfm_medusa_mesh"
  },
  "about/portrait": {
   "project": "about",
