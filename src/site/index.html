@@ -245,6 +245,15 @@ section{padding:88px 0}
 .term-box .no{color:var(--gold)}
 .term-cursor{display:inline-block;width:7px;height:13px;background:var(--accent);vertical-align:-2px;margin-left:2px;animation:tblink 1s steps(1) infinite}
 @keyframes tblink{50%{opacity:0}}
+.media.term.has-tele{flex-direction:column;align-items:stretch;justify-content:center;gap:10px;padding:18px 24px}
+.term-tele{height:62px;flex:none;border-bottom:1px solid var(--border);padding-bottom:8px}
+.term-tele canvas{width:100%;height:100%;display:block}
+.has-tele .term-box{line-height:1.95}
+.tgt-wrap canvas{width:100%;height:100%;display:block}
+.gauge-cap .tgt-n{color:var(--text);font-weight:600}
+.media.sim{background:radial-gradient(ellipse 60% 60% at 30% 0%, rgba(var(--accent-rgb),.06), transparent), var(--term-bg)}
+.media.sim canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.media.sim.live .big-metric{display:none}
 .depth-body img{border-radius:10px;border:1px solid var(--border);max-width:420px;height:auto}
 
 /* image credits and video wrappers (media comes from the materials pipeline, see README) */
@@ -322,6 +331,10 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
 }
 
 /* ---------- responsive ---------- */
+@media (max-width:600px){
+  .term-tele{display:none}
+  .media.term.has-tele{padding:24px 26px}
+}
 @media (max-width:900px){
   .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .stat{padding:22px 18px}
@@ -505,6 +518,12 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
             </div>
             <div class="gauge-cap">failure modes isolated by ablation testing; sensor drift engineered out</div>
           </div>
+          <div class="gauge-col" aria-hidden="true">
+            <div class="gauge-wrap tgt-wrap">
+              <canvas class="target-canvas"></canvas>
+            </div>
+            <div class="gauge-cap"><span class="tgt-n">98</span> of every 100 cases inside the target range, up from 29 (one dot per percent)</div>
+          </div>
           <div class="gauge-side" aria-hidden="true">
             <div class="gs"><div class="n"><span class="cnt" data-from="29" data-to="98">98</span>% <span class="unit">target-range hit rate</span></div><div class="l">driven by a purpose-built error model, measured across hundreds of validation cases</div></div>
             <div class="gs"><div class="n"><span class="down">↓</span><span class="cnt" data-to="94">94</span>% <span class="unit">operational failures</span></div><div class="l">every incident root-caused; fixes proven on production runs</div></div>
@@ -521,7 +540,8 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
       </div>
 
       <div class="card reveal" data-tags="production agents">
-        <div class="media term" role="img" aria-label="Stylized console: a robot error pauses station B; the platform reads the live logs and similar past incidents and returns a likely cause and fix steps with evidence; an engineer asks how to recover the arm and gets an answer with sources, with hardware steps left for sign-off">
+        <div class="media term has-tele" role="img" aria-label="Stylized console with live robot, workflow and resource traces: a robot error pauses station B; the platform reads the live logs and similar past incidents and returns a likely cause and fix steps with evidence; an engineer asks how to recover the arm and gets an answer with sources, with hardware steps left for sign-off">
+          <div class="term-tele" aria-hidden="true"><canvas id="ops-tele"></canvas></div>
           <div class="term-box" aria-hidden="true" id="ops-term">
             <div class="tl"><span class="no">⚠ station B</span> · robot error · run paused</div>
             <div class="tl">live logs <span class="ok">✓</span> · robot state <span class="ok">✓</span> · 3 similar incidents</div>
@@ -552,7 +572,9 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
       </div>
 
       <div class="card reveal" data-tags="production perception">
-        <div class="media no-media">
+        <div class="media no-media sim" role="img" aria-label="Simulated illustration: one camera sees a tapered tool tip that sits off its nominal position; edge points along its contour feed a least-squares fit that estimates the tip's 5-DoF pose error (three offsets, two tilts), and the tip is corrected back onto the target">
+          <canvas class="calib-canvas" aria-hidden="true"></canvas>
+          <span class="credit">Simulated illustration</span>
           <div class="big-metric"><div class="n">5-DoF</div><div class="l">tool-tip pose correction, one camera</div></div>
         </div>
         <div class="card-body">
@@ -1026,8 +1048,9 @@ document.querySelectorAll('video').forEach(v=>{
     running = true;
     while (visible && !document.hidden){
       lines.forEach(l=>{ l.el.style.visibility = 'hidden'; });
-      for (const l of lines){
+      for (const [i, l] of lines.entries()){
         l.el.style.visibility = '';
+        box.dispatchEvent(new CustomEvent('termline', { detail: i }));
         if (!await typeLine(l)){ restore(); running = false; return; }
         await sleep(l.el.textContent.startsWith('→') ? 750 : 260);
       }
@@ -1168,6 +1191,356 @@ document.querySelectorAll('video').forEach(v=>{
   addEventListener('themechange', ()=>{ C = readC(); if (!dead && noMotion.matches) staticPose(); });
   resize();
   wake();
+})();
+
+// XtalPi cards: self-drawn canvas illustrations (no third-party pixels). Colours come from the CSS
+// variables; reduced motion draws one still frame.
+function vizCanvas(canvas, draw){
+  const ctx = canvas.getContext('2d');
+  let W = 0, H = 0;
+  function size(){
+    const r = canvas.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
+    W = r.width; H = r.height;
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  return { ctx, size, get W(){ return W; }, get H(){ return H; } };
+}
+function vizColors(){
+  const cs = getComputedStyle(document.documentElement), v = n => cs.getPropertyValue(n).trim();
+  return { accent:v('--accent'), accentRgb:v('--accent-rgb'), gold:v('--gold'), goldRgb:v('--gold-rgb'), text:v('--text'),
+    muted:v('--muted'), faint:v('--faint'), border:v('--border'), border2:v('--border2'), card2:v('--card2'), arm:v('--arm-fill'), joint:v('--joint-fill') };
+}
+function vizLoop(el, frame, still){
+  let visible = false, raf = 0, last = 0;
+  function tick(t){
+    raf = 0;
+    if (!visible || document.hidden) return;
+    const dt = last ? Math.min(.05, (t - last) / 1000) : 0; last = t;
+    frame(dt);
+    raf = requestAnimationFrame(tick);
+  }
+  function go(){
+    if (noMotion.matches){ still(); return; }
+    if (visible && !document.hidden && !raf){ last = 0; raf = requestAnimationFrame(tick); }
+  }
+  new IntersectionObserver(es=>{ visible = es[0].isIntersecting; go(); }, { threshold: .15 }).observe(el);
+  document.addEventListener('visibilitychange', go);
+  return go;
+}
+function seeded(s){ return ()=>{ s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; }; }
+
+// Production case study: 100 dots, one per percent of validation cases; 29 → 98 land in the target range
+(function(){
+  const canvas = document.querySelector('.target-canvas');
+  if (!canvas) return;
+  const V = vizCanvas(canvas);
+  let C = vizColors();
+  const rnd = seeded(823), N = 100, FROM = 29, TO = 98;
+  // inside-target indices: the first FROM are always in; FROM..TO-1 move in; the rest stay out
+  const dots = [];
+  for (let i = 0; i < N; i++){
+    const a = rnd() * Math.PI * 2;
+    const rin = Math.sqrt(rnd()) * .88, rout = 1.1 + rnd() * .36;
+    const a2 = a + (rnd() - .5) * .5;
+    dots.push({ a, a2, r0: i < FROM ? rin : rout, r1: i < TO ? Math.sqrt(rnd()) * .88 : 1.08 + rnd() * .18, ph: rnd() * 6.3 });
+  }
+  let t = 0, p = 0;
+  const ease = x => x < .5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3) / 2;
+  function draw(){
+    const { ctx, W, H } = V, cx = W/2, cy = H/2, R = Math.min(W, H) * .34;
+    ctx.clearRect(0, 0, W, H);
+    ctx.lineWidth = 1;
+    for (const k of [1.46, 1.22]){ ctx.strokeStyle = C.border; ctx.beginPath(); ctx.arc(cx, cy, R*k, 0, 7); ctx.stroke(); }
+    ctx.strokeStyle = C.border; ctx.beginPath(); ctx.moveTo(cx - R*1.46, cy); ctx.lineTo(cx + R*1.46, cy); ctx.moveTo(cx, cy - R*1.46); ctx.lineTo(cx, cy + R*1.46); ctx.stroke();
+    ctx.fillStyle = `rgba(${C.accentRgb},.10)`; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.fill();
+    ctx.strokeStyle = C.accent; ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.stroke(); ctx.setLineDash([]);
+    const e = ease(p);
+    let inside = 0;
+    for (const d of dots){
+      const r = d.r0 + (d.r1 - d.r0) * e, a = d.a + (d.a2 - d.a) * e;
+      const jit = noMotion.matches ? 0 : Math.sin(t * 1.3 + d.ph) * .015;
+      const x = cx + Math.cos(a) * (r + jit) * R, y = cy + Math.sin(a) * (r + jit) * R;
+      const ok = r < 1; if (ok) inside++;
+      ctx.fillStyle = ok ? C.accent : C.gold;
+      ctx.globalAlpha = ok ? .95 : .85;
+      ctx.beginPath(); ctx.arc(x, y, 2.6, 0, 7); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    return inside;
+  }
+  const out = canvas.parentElement.querySelector('.tgt-n');
+  function frame(dt){
+    t += dt;
+    if (canvas.closest('.reveal.on')) p = Math.min(1, p + dt / 2.2);
+    const n = draw();
+    if (out) out.textContent = n;
+  }
+  const go = vizLoop(canvas, frame, ()=>{ p = 1; draw(); if (out) out.textContent = TO; });
+  addEventListener('resize', ()=>{ V.size(); if (noMotion.matches) go(); else draw(); });
+  addEventListener('themechange', ()=>{ C = vizColors(); if (noMotion.matches) go(); else draw(); });
+  V.size(); go();
+})();
+
+// AI ops: three live lanes (robot, workflow, resources). The console's first line raises a fault on
+// the robot lane; its second line sweeps a correlation cursor across all three.
+(function(){
+  const canvas = document.getElementById('ops-tele'), box = document.getElementById('ops-term');
+  if (!canvas || !box) return;
+  const V = vizCanvas(canvas);
+  let C = vizColors();
+  const lanes = ['robot', 'workflow', 'resources'], hist = lanes.map(()=>[]);
+  const rnd = seeded(4823);
+  let acc = 0, fault = 0, scan = -1, faultAt = -1, t = 0;
+  const STEP = 3; // px per sample
+  function sample(i){
+    const base = [Math.sin(t*2.1)*.22 + Math.sin(t*5.3)*.08, (Math.sin(t*.9)>.2?.25:-.15) + Math.sin(t*7)*.03, Math.sin(t*.6)*.18 + Math.sin(t*3.1)*.05][i];
+    let v = base + (rnd() - .5) * .08;
+    if (i === 0 && fault > 0) v = .9 - (rnd() * .25);
+    if (i === 1 && fault > 0) v = -.42;
+    return { v, f: fault > 0 && i < 2 };
+  }
+  function push(){
+    for (let i = 0; i < 3; i++){ hist[i].push(sample(i)); if (hist[i].length > 400) hist[i].shift(); }
+    if (fault > 0) fault--;
+    if (faultAt >= 0) faultAt++;
+  }
+  function draw(){
+    const { ctx, W, H } = V, lh = H / 3, labW = 74;
+    ctx.clearRect(0, 0, W, H);
+    ctx.font = '10.5px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace';
+    ctx.textBaseline = 'middle';
+    const n = Math.floor((W - labW) / STEP);
+    for (let i = 0; i < 3; i++){
+      const y0 = lh * i + lh / 2, h = hist[i], s = Math.max(0, h.length - n);
+      ctx.fillStyle = C.faint; ctx.fillText(lanes[i], 0, y0);
+      ctx.strokeStyle = C.border; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(labW, y0); ctx.lineTo(W, y0); ctx.stroke();
+      ctx.lineWidth = 1.4;
+      let prev = null;
+      for (let k = s; k < h.length; k++){
+        const x = labW + (k - s) * STEP + (n - (h.length - s)) * STEP, y = y0 - h[k].v * lh * .42;
+        if (prev){ ctx.strokeStyle = h[k].f ? C.gold : `rgba(${C.accentRgb},.75)`; ctx.beginPath(); ctx.moveTo(prev[0], prev[1]); ctx.lineTo(x, y); ctx.stroke(); }
+        prev = [x, y];
+      }
+    }
+    if (faultAt >= 0){
+      const x = W - faultAt * STEP;
+      if (x > labW){
+        ctx.fillStyle = C.gold; ctx.beginPath(); ctx.arc(x, lh * .5 - .9 * lh * .42 + 2, 3, 0, 7); ctx.fill();
+      } else faultAt = -1;
+    }
+    if (scan >= 0 && faultAt >= 0){
+      const x = W - faultAt * STEP;
+      ctx.strokeStyle = C.accent; ctx.lineWidth = 1; ctx.setLineDash([3, 3]);
+      ctx.beginPath(); ctx.moveTo(x, 2); ctx.lineTo(x, H - 2); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = `rgba(${C.accentRgb},${.10 * (1 - scan)})`; ctx.fillRect(x - 26, 0, 52, H);
+      for (let i = 0; i < 3; i++){ ctx.fillStyle = C.accent; ctx.beginPath(); ctx.arc(x, lh * i + lh / 2, 2.6, 0, 7); ctx.fill(); }
+    }
+  }
+  box.addEventListener('termline', e=>{
+    if (e.detail === 0){ fault = 26; faultAt = 0; scan = -1; }
+    if (e.detail === 1) scan = 0;
+    if (e.detail === 3) scan = -1;
+  });
+  function frame(dt){
+    t += dt; acc += dt;
+    while (acc > 1/30){ acc -= 1/30; push(); }
+    if (scan >= 0) scan = Math.min(1, scan + dt);
+    draw();
+  }
+  function still(){ t = 0; for (let k = 0; k < 400; k++){ t += 1/30; if (k === 330) { fault = 26; faultAt = 0; } push(); } scan = 1; draw(); }
+  const go = vizLoop(canvas, frame, still);
+  addEventListener('resize', ()=>{ V.size(); if (noMotion.matches) go(); else draw(); });
+  addEventListener('themechange', ()=>{ C = vizColors(); if (noMotion.matches) go(); else draw(); });
+  for (let k = 0; k < 400; k++){ t += 1/30; push(); }
+  V.size(); go();
+})();
+
+// Monocular calibration: one simulated camera watches a tapered tip. Contour points along its
+// silhouette drive a least-squares pose fit (Gauss–Newton on 5 DoF: three offsets and two tilts;
+// spin about the tip's own axis is invisible, which is why it is five), then the tip is corrected.
+(function(){
+  const canvas = document.querySelector('.calib-canvas');
+  if (!canvas) return;
+  canvas.closest('.media').classList.add('live');
+  const V = vizCanvas(canvas);
+  let C = vizColors();
+  const rnd = seeded(5);
+  const TIP = { r: 2.2, cone: 9, body: 40 };
+  const RING = [];
+  for (let h of [0, .5, 1.5, 3, 4.5, 6, 7.5, 9, 14, 22, 32, 40]){
+    const r = h <= TIP.cone ? TIP.r * h / TIP.cone : TIP.r;
+    for (let k = 0; k < 20; k++){ const a = k / 20 * Math.PI * 2; RING.push([Math.cos(a) * r, -h, Math.sin(a) * r]); }
+  }
+  const D = 70; // camera distance (mm)
+  function project(pose, p, f, ox, oy){
+    const [dx, dy, dz, ax, az] = pose;
+    let [x, y, z] = p;
+    let y1 = y * Math.cos(ax) - z * Math.sin(ax), z1 = y * Math.sin(ax) + z * Math.cos(ax); y = y1; z = z1;
+    let x1 = x * Math.cos(az) - y * Math.sin(az); y1 = x * Math.sin(az) + y * Math.cos(az); x = x1; y = y1;
+    x += dx; y += dy; z += dz;
+    const s = f / (D + z);
+    return [ox + x * s, oy + y * s];
+  }
+  function hull(pts){
+    pts = pts.slice().sort((a, b)=> a[0] - b[0] || a[1] - b[1]);
+    const cr = (o, a, b)=> (a[0]-o[0])*(b[1]-o[1]) - (a[1]-o[1])*(b[0]-o[0]);
+    const lo = [], up = [];
+    for (const p of pts){ while (lo.length > 1 && cr(lo[lo.length-2], lo[lo.length-1], p) <= 0) lo.pop(); lo.push(p); }
+    for (let i = pts.length - 1; i >= 0; i--){ const p = pts[i]; while (up.length > 1 && cr(up[up.length-2], up[up.length-1], p) <= 0) up.pop(); up.push(p); }
+    return lo.slice(0, -1).concat(up.slice(0, -1));
+  }
+  // edge features: left/right silhouette x at fixed image rows, and the tip's lowest point
+  function features(pose, g){
+    const P = RING.map(p => project(pose, p, g.f, g.ox, g.oy)), H = hull(P), out = [];
+    for (const yy of g.rows){
+      let L = Infinity, R = -Infinity;
+      for (let i = 0; i < H.length; i++){
+        const a = H[i], b = H[(i + 1) % H.length];
+        if ((a[1] - yy) * (b[1] - yy) <= 0 && a[1] !== b[1]){ const x = a[0] + (yy - a[1]) / (b[1] - a[1]) * (b[0] - a[0]); L = Math.min(L, x); R = Math.max(R, x); }
+      }
+      out.push(isFinite(L) ? L : g.ox, isFinite(R) ? R : g.ox);
+    }
+    let tx = 0, ty = -Infinity; for (const p of P) if (p[1] > ty){ ty = p[1]; tx = p[0]; }
+    out.push(tx, ty);
+    // foreshortening of the rim ellipse carries the tilt toward the camera
+    const rim = RING.slice(8*20, 9*20).map(p => project(pose, p, g.f, g.ox, g.oy));
+    let mn = Infinity, mx = -Infinity; for (const p of rim){ mn = Math.min(mn, p[1]); mx = Math.max(mx, p[1]); }
+    out.push((mx - mn) * 3);
+    return { f: out, H };
+  }
+  function solve(A, b){ // normal equations, 5x5 Gaussian elimination
+    const n = b.length, M = A.map((r, i)=> r.concat(b[i]));
+    for (let i = 0; i < n; i++){
+      let piv = i; for (let k = i + 1; k < n; k++) if (Math.abs(M[k][i]) > Math.abs(M[piv][i])) piv = k;
+      [M[i], M[piv]] = [M[piv], M[i]];
+      for (let k = i + 1; k < n; k++){ const c = M[k][i] / M[i][i]; for (let j = i; j <= n; j++) M[k][j] -= c * M[i][j]; }
+    }
+    const x = new Array(n).fill(0);
+    for (let i = n - 1; i >= 0; i--){ let s = M[i][n]; for (let j = i + 1; j < n; j++) s -= M[i][j] * x[j]; x[i] = s / M[i][i]; }
+    return x;
+  }
+  function gnStep(est, obs, g){
+    const f0 = features(est, g).f, r = obs.map((o, i)=> o - f0[i]), J = [];
+    for (let j = 0; j < 5; j++){ const e = est.slice(), h = j < 3 ? .01 : .0005; e[j] += h; const f1 = features(e, g).f; J.push(f1.map((v, i)=> (v - f0[i]) / h)); }
+    const A = [...Array(5)].map((_, a)=> [...Array(5)].map((_, b)=> J[a].reduce((s, v, i)=> s + v * J[b][i], 0) + (a === b ? 1e-3 : 0)));
+    const bb = [...Array(5)].map((_, a)=> J[a].reduce((s, v, i)=> s + v * r[i], 0));
+    const d = solve(A, bb);
+    return { est: est.map((v, i)=> v + d[i]), res: Math.sqrt(r.reduce((s, v)=> s + v*v, 0) / r.length) };
+  }
+  let truth = [0,0,0,0,0], shown = [0,0,0,0,0], est = [0,0,0,0,0], obs = null, edges = [], res = [];
+  let phase = 0, pt = 0, iter = 0, g = null;
+  function geom(){
+    const { W, H } = V, pw = W * (W < 420 ? .5 : .6);
+    const f = H * .38 * D / TIP.cone;
+    return { f, ox: pw * .5, oy: H * .62, pw, rows: [.18, .3, .42, .5, .56].map(k => H * k) };
+  }
+  function newError(){
+    const s = () => rnd() < .5 ? -1 : 1;
+    truth = [s() * (.5 + rnd() * .9), s() * (.4 + rnd() * .8), s() * (2 + rnd() * 3), s() * (.03 + rnd() * .04), s() * (.03 + rnd() * .05)];
+  }
+  function startFit(){
+    g = geom();
+    const F = features(truth, g);
+    obs = F.f.map(v => v + (rnd() - .5) * .4);
+    edges = [];
+    const Hh = F.H;
+    for (let i = 0; i < Hh.length; i++){
+      const a = Hh[i], b = Hh[(i + 1) % Hh.length], L = Math.hypot(b[0]-a[0], b[1]-a[1]);
+      for (let s = 0; s < L; s += 11){ const x = a[0] + (b[0]-a[0]) * s / L, y = a[1] + (b[1]-a[1]) * s / L; if (y > 6) edges.push([x + (rnd()-.5)*.8, y + (rnd()-.5)*.8]); }
+    }
+    edges.sort((a, b)=> b[1] - a[1]);
+    est = [0,0,0,0,0]; res = []; iter = 0;
+  }
+  const DEG = 180 / Math.PI, NAMES = ['Δx','Δy','Δz','θx','θy'];
+  function fmt(v, i){ const n = i < 3 ? v : v * DEG; return (n >= 0 ? '+' : '−') + Math.abs(n).toFixed(2) + (i < 3 ? ' mm' : '°'); }
+  function draw(){
+    const { ctx, W, H } = V; g = g || geom();
+    const gg = geom();
+    ctx.clearRect(0, 0, W, H);
+    // camera view panel
+    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, gg.pw, H); ctx.clip();
+    ctx.strokeStyle = C.border; ctx.lineWidth = 1;
+    for (let x = gg.pw * .5 % 24; x < gg.pw; x += 24){ ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+    for (let y = gg.oy % 24; y < H; y += 24){ ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(gg.pw, y); ctx.stroke(); }
+    const body = hull(RING.map(p => project(shown, p, gg.f, gg.ox, gg.oy)));
+    const grad = ctx.createLinearGradient(gg.ox - 40, 0, gg.ox + 40, 0);
+    grad.addColorStop(0, C.joint); grad.addColorStop(.45, C.border2); grad.addColorStop(1, C.arm);
+    ctx.fillStyle = grad; ctx.strokeStyle = C.border2;
+    ctx.beginPath(); body.forEach((p, i)=> i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath(); ctx.fill(); ctx.stroke();
+    // nominal target crosshair
+    const done = phase >= 3;
+    ctx.strokeStyle = done ? C.accent : C.faint; ctx.setLineDash([3, 4]);
+    ctx.beginPath(); ctx.moveTo(gg.ox - 26, gg.oy); ctx.lineTo(gg.ox + 26, gg.oy); ctx.moveTo(gg.ox, gg.oy - 26); ctx.lineTo(gg.ox, gg.oy + 26); ctx.stroke(); ctx.setLineDash([]);
+    ctx.beginPath(); ctx.arc(gg.ox, gg.oy, 9, 0, 7); ctx.stroke();
+    // detected edge points
+    if (phase >= 1 && phase < 3){
+      const k = phase === 1 ? Math.floor(edges.length * Math.min(1, pt / .8)) : edges.length;
+      ctx.fillStyle = C.gold;
+      for (let i = 0; i < k; i++){ ctx.beginPath(); ctx.arc(edges[i][0], edges[i][1], 1.7, 0, 7); ctx.fill(); }
+      if (phase === 1 && k < edges.length){ const y = edges[k][1]; ctx.strokeStyle = `rgba(${C.goldRgb},.45)`; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(gg.pw, y); ctx.stroke(); }
+    }
+    // model fit outline
+    if (phase >= 2){
+      const fit = hull(RING.map(p => project(phase >= 3 ? shown : est, p, gg.f, gg.ox, gg.oy)));
+      ctx.strokeStyle = C.accent; ctx.lineWidth = 1.6;
+      ctx.beginPath(); fit.forEach((p, i)=> i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath(); ctx.stroke();
+    }
+    ctx.restore();
+    ctx.strokeStyle = C.border; ctx.beginPath(); ctx.moveTo(gg.pw + .5, 0); ctx.lineTo(gg.pw + .5, H); ctx.stroke();
+    // readout
+    const small = W < 420, m = small ? 10 : 16, x0 = gg.pw + m, mono = 'ui-monospace,SFMono-Regular,Menlo,Consolas,monospace';
+    ctx.textBaseline = 'alphabetic';
+    ctx.font = `600 ${small ? 9 : 10}px Inter,sans-serif`; ctx.fillStyle = C.faint;
+    ctx.fillText(small ? '5-DOF POSE ERROR' : '5-DOF POSE ERROR · 1 CAMERA', x0, H * .14);
+    const vals = phase >= 3 ? shown : (phase === 2 ? est : null);
+    ctx.font = `${small ? 10.5 : 12}px ${mono}`;
+    const bw = W - x0 - m;
+    for (let i = 0; i < 5; i++){
+      const y = H * (.25 + i * .1);
+      ctx.fillStyle = C.muted; ctx.fillText(NAMES[i], x0, y);
+      const txt = vals ? fmt(vals[i], i) : '  ·····';
+      ctx.fillStyle = phase >= 3 ? C.accent : C.text; ctx.textAlign = 'right'; ctx.fillText(txt, W - m, y); ctx.textAlign = 'left';
+      const scale = i < 3 ? (i === 2 ? 5 : 1.5) : .09, frac = vals ? Math.max(-1, Math.min(1, vals[i] / scale)) : 0;
+      const by = y + 5, mid = x0 + bw / 2;
+      ctx.fillStyle = C.border; ctx.fillRect(x0, by, bw, 2);
+      ctx.fillStyle = phase >= 3 ? C.accent : C.gold; ctx.fillRect(Math.min(mid, mid + frac * bw / 2), by, Math.abs(frac * bw / 2) + 1, 2);
+    }
+    // residual per Gauss-Newton iteration
+    const ry = H * .9, rh = H * .1;
+    ctx.font = `600 ${small ? 9 : 10}px Inter,sans-serif`; ctx.fillStyle = C.faint;
+    ctx.fillText(phase >= 3 ? 'CORRECTED ✓' : (phase === 2 ? (small ? 'LSQ FIT · ITER ' : 'LEAST-SQUARES FIT · ITER ') + iter : (phase === 1 ? 'EXTRACTING CONTOUR' : 'NEW TOOL POSE')), x0, ry - rh - 6);
+    if (res.length){
+      const m = Math.max(...res), lx = v => x0 + v / 7 * bw, ly = v => ry - Math.log1p(v) / Math.log1p(m) * rh;
+      ctx.strokeStyle = C.accent; ctx.lineWidth = 1.4; ctx.beginPath();
+      res.forEach((v, i)=> i ? ctx.lineTo(lx(i), ly(v)) : ctx.moveTo(lx(i), ly(v))); ctx.stroke();
+      ctx.fillStyle = C.accent; res.forEach((v, i)=>{ ctx.beginPath(); ctx.arc(lx(i), ly(v), 1.8, 0, 7); ctx.fill(); });
+    }
+    ctx.strokeStyle = C.border; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x0, ry + .5); ctx.lineTo(W - m, ry + .5); ctx.stroke();
+  }
+  const lerp = (a, b, k)=> a.map((v, i)=> v + (b[i] - v) * k);
+  let fitT = 0;
+  function frame(dt){
+    pt += dt;
+    if (phase === 0){ shown = lerp(shown, truth, Math.min(1, dt * 5)); if (pt > .9){ shown = truth.slice(); startFit(); phase = 1; pt = 0; } }
+    else if (phase === 1){ if (pt > 1.1){ phase = 2; pt = 0; fitT = 0; } }
+    else if (phase === 2){
+      fitT += dt;
+      if (fitT > .32 && iter < 7){ fitT = 0; const s = gnStep(est, obs, g); est = s.est; res.push(s.res); iter++; }
+      if (iter >= 7 && fitT > .9){ phase = 3; pt = 0; }
+    }
+    else if (phase === 3){ shown = lerp(shown, [0,0,0,0,0], Math.min(1, dt * 3.2)); if (pt > 2.6){ phase = 0; pt = 0; newError(); res = []; } }
+    draw();
+  }
+  function still(){
+    V.size(); newError(); shown = truth.slice(); startFit();
+    for (let i = 0; i < 7; i++){ const s = gnStep(est, obs, g); est = s.est; res.push(s.res); iter++; }
+    phase = 2; draw();
+  }
+  const go = vizLoop(canvas, frame, still);
+  addEventListener('resize', ()=>{ V.size(); g = geom(); if (noMotion.matches) go(); else draw(); });
+  addEventListener('themechange', ()=>{ C = vizColors(); if (noMotion.matches) go(); else draw(); });
+  V.size(); newError(); go();
 })();
 
 // Attention analytics — privacy-gated GoatCounter events and accumulated visible-time buckets.
