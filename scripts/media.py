@@ -28,8 +28,9 @@ A media.json source can be:
 An entry with "kind": "video" becomes a muted, looping web video (H.264 MP4, no audio) plus a poster:
   {"video": "hololens-fov/own_demo.mp4", "start": 28, "end": 57}  a clip of a video, in seconds
   {"file": "ur5-manipulation/gh_demo.gif"}                       an animated GIF
-  optional on the entry: "max_width" (default 1280), "crf" (default 26; higher = smaller file) and
+  optional on the entry: "max_width" (default 1280), "crf" (default 26; higher = smaller file),
   "name" (the clip's file name, e.g. "perception_demo": the page's analytics name videos by file name)
+  and "poster_at" (seconds into the clip for the poster frame; default the first frame)
 
 media.json "_og": {"media": "<id>", "focus": [x, y]} names the image cropped into the 1200x630 social
 card; focus is the point to keep, 0-1 from the top left.
@@ -120,7 +121,7 @@ def spec_hash(item, sources):
             "source": item["source"],
             "kind": item.get("kind"),
             "quality": item.get("quality"),
-            "video": [item.get("max_width"), item.get("crf"), item.get("name")],
+            "video": [item.get("max_width"), item.get("crf"), item.get("name")] + ([item["poster_at"]] if "poster_at" in item else []),
             "v": PIPELINE_VERSION,
             "file": fingerprint(source_path(item, sources)),
         },
@@ -301,7 +302,7 @@ def build_video(item, sources):
     subprocess.run(cmd, check=True)
     os.replace(tmp, out)
     w, h, duration = probe(out)
-    poster = video_frame(out, 0)
+    poster = video_frame(out, item.get("poster_at", 0))
     return {
         "w": w,
         "h": h,

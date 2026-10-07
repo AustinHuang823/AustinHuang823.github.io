@@ -36,6 +36,21 @@
   "caption": "The UR5 on the bench at Johns Hopkins.",
   "alt": "A UR5 robot arm on a wooden lab bench next to a window, with a pen fixture and a box marked ROBOTO"
  },
+ "ur5/pick-clip": {
+  "project": "ur5-manipulation",
+  "source": {
+   "video": "ur5-manipulation/own_ur5-pick-and-drop-sim-clip-01.mp4"
+  },
+  "kind": "video",
+  "max_width": 720,
+  "crf": 26,
+  "rights": "own",
+  "credit": "Austin Huang, Danny Chang and John Han, JHU · simulated from the team's code",
+  "holder": "Austin Huang with Danny Chang and John Han",
+  "caption": "From the team's lab photo into simulation: hand-eye calibration on a marker in the bin, the team's RRT planner, then a pick and drop onto that marker, guided by the wrist camera's ArUco reading.",
+  "alt": "The team's lab photo of a UR5 with a gripper and wrist camera opens into a simulation: the arm takes ten calibration views of an ArUco marker in a clear bin, an RRT tree grows, and the arm picks the marked cube and drops it onto the marker in the bin",
+  "name": "ur5_pickdrop"
+ },
  "clashbots/robot": {
   "project": "clash-bots",
   "source": {
@@ -106,17 +121,18 @@
  "ur5/drawing-clip": {
   "project": "ur5-manipulation",
   "source": {
-   "file": "ur5-manipulation/gh_ur5-drawing-jhu-logo-demo-01.gif"
+   "video": "ur5-manipulation/own_ur5-drawing-sim-and-real-clip-01.mp4"
   },
   "kind": "video",
   "max_width": 720,
-  "crf": 22,
+  "crf": 26,
   "rights": "own",
-  "credit": "RDKDC Team 7, JHU",
+  "credit": "RDKDC Team 7, JHU · simulated from the team's code",
   "holder": "Austin Huang with RDKDC Group 7",
-  "caption": "The UR5 drawing the Johns Hopkins shield.",
-  "alt": "UR5 robot arm drawing the Johns Hopkins logo",
-  "name": "rdkdc_imagedrawing"
+  "caption": "The team's waypoint plan for the Johns Hopkins shield, replayed on a simulated UR5 matched to the real run, then the real time-lapse and the scanned drawing over the plan.",
+  "alt": "The Johns Hopkins shield as planned waypoints, a simulated UR5 drawing it, the real UR5 drawing it in a time-lapse, and the scanned drawing over the plan",
+  "name": "rdkdc_imagedrawing",
+  "poster_at": 4.6
  },
  "segmentation/training": {
   "project": "semantic-segmentation",
