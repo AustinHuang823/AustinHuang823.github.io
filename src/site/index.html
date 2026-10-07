@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Austin Huang — Robotics &amp; Automation Systems</title>
-<meta name="description" content="Austin Huang — robotics &amp; automation systems, Boston. Production robotics, vision-guided manipulation, simulation, and AI-agent systems for real-world automation.">
+<meta name="description" content="Austin Huang, robotics &amp; automation systems engineer in Boston: production robotics, vision-guided manipulation, simulation, and an AI operations platform for LLM agents.">
 <meta property="og:title" content="Austin Huang — Robotics & Automation Systems">
-<meta property="og:description" content="From lab demos to production floors: robotics systems, perception, simulation — and AI agents that help operate them. Leading North America automation systems at XtalPi.">
+<meta property="og:description" content="From lab demos to production floors: robotics systems, perception, simulation — and the AI operations platform that gives agents the context to help run them. Leading North America automation systems at XtalPi.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://austinhuang823.github.io/">
 <meta property="og:site_name" content="Austin Huang — Portfolio">
@@ -43,7 +43,7 @@
     "https://github.com/AustinHuang823",
     "https://www.linkedin.com/in/chingyangh/"
   ],
-  "knowsAbout": ["Robotics", "Automation Systems", "Computer Vision", "Robot Calibration", "Simulation", "LLM Agents", "AI for Robot Operations"]
+  "knowsAbout": ["Robotics", "Automation Systems", "Computer Vision", "Robot Calibration", "Simulation", "LLM Agents", "AI for Robot Operations", "AI Operations Platforms", "Root-Cause Analysis"]
 }
 </script>
 <style>
@@ -540,33 +540,35 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
       </div>
 
       <div class="card reveal" data-tags="production agents">
-        <div class="media term has-tele" role="img" aria-label="Stylized console with live robot, workflow and resource traces: a robot error pauses station B; the platform reads the live logs and similar past incidents and returns a likely cause and fix steps with evidence; an engineer asks how to recover the arm and gets an answer with sources, with hardware steps left for sign-off">
+        <div class="media term has-tele" role="img" aria-label="Stylized console with live robot, workflow and resource traces: a robot error pauses station B; the platform correlates robot, workflow and resource state with similar past incidents and returns a likely cause and fix steps with evidence; an engineer asks where a run stands and when it will finish, and gets per-module progress and a forecast with sources">
           <div class="term-tele" aria-hidden="true"><canvas id="ops-tele"></canvas></div>
           <div class="term-box" aria-hidden="true" id="ops-term">
             <div class="tl"><span class="no">⚠ station B</span> · robot error · run paused</div>
-            <div class="tl">live logs <span class="ok">✓</span> · robot state <span class="ok">✓</span> · 3 similar incidents</div>
+            <div class="tl">robot <span class="ok">✓</span> · workflow <span class="ok">✓</span> · resources <span class="ok">✓</span> · 3 similar incidents</div>
             <div class="tl"><span class="ok">→ likely cause + fix steps, with evidence</span></div>
-            <div class="tl"><span class="pr">$ ask</span> how do we recover the arm on line 2?</div>
-            <div class="tl">knowledge base <span class="ok">✓</span> · 2 matching procedures</div>
-            <div class="tl"><span class="ok">→ answer with sources · hardware steps need sign-off</span></div>
+            <div class="tl"><span class="pr">$ ask</span> where is run 14, and when does it finish?</div>
+            <div class="tl">process records <span class="ok">✓</span> · dependency graph <span class="ok">✓</span></div>
+            <div class="tl"><span class="ok">→ module 3 of 5 · ETA 14:20 · sources cited</span></div>
           </div>
         </div>
         <div class="card-body">
-          <div class="card-meta">XtalPi · Used across automation departments</div>
+          <div class="card-meta">XtalPi · Development, test &amp; deployment teams</div>
           <h3>AI Operations Platform for Robotic Automation</h3>
-          <div class="impact">Used across XtalPi's automation teams for live troubleshooting, postmortem root-cause analysis, and preflight validation</div>
-          <p>Shared operational context for LLM agents. The platform brings live robot telemetry, execution logs, and engineering knowledge together, so agents can correlate robot, workflow, and resource state and turn operational evidence into a diagnosis and next steps, with sources attached.</p>
+          <div class="impact">One shared operations layer for robotic lab automation: monitor runs, diagnose faults, keep failures from repeating, prepare tests, and share what teams learn</div>
+          <p>Shared operational context for LLM agents. The platform puts robot telemetry, process records, logs, device configs, and engineering knowledge behind one governed data plane, so agents can say where a run stands, triage a fault against a reviewed incident casebook, trace the root cause afterward, and catch config drift before the next run. Every answer cites its source.</p>
           <details class="depth" data-pid="ai-operations-agent-safety">
             <summary>Inside the system</summary>
             <div class="depth-body">
-              <p><strong>Live troubleshooting.</strong> When a robot or station fails mid-run, agents read the telemetry and surrounding logs, correlate robot, workflow, and resource state, and return a likely cause and next steps, so engineers start from an answer instead of a raw log.</p>
-              <p><strong>Postmortem root-cause analysis.</strong> After an incident, agents trace the evidence to a root cause or, when the data can't settle it, an evidence-backed hypothesis and the next check to run. Findings become reusable knowledge once an engineer reviews and approves them, so a failure diagnosed once is recognized the next time.</p>
-              <p><strong>Preflight validation.</strong> What past failures taught becomes automated checks that run before a job starts.</p>
-              <p><strong>Safe by default.</strong> It reads freely; anything that acts on hardware goes through gated, audited steps (policy, role, preflight, explicit confirmation).</p>
-              <p><strong>Production software.</strong> 42 documented capabilities, strict typing, and 130+ automated tests behind an enforced coverage gate.</p>
+              <p><strong>Live operations visibility.</strong> Ask where a run stands and get per-module progress and the latest results. ETA forecasts follow the workflow's dependency graph and are scored later against what actually happened; scheduled briefings roll status, resources, and drift into one page.</p>
+              <p><strong>Diagnosis and root-cause analysis.</strong> Live triage matches a fault to past incidents and pulls the logs, drive state, and process records around it. After a run, agents link errors to steps, trace stalled workflows to the resource or lock that blocks them, and break down calibration, motion, and cycle-time problems.</p>
+              <p><strong>Prevention and change control.</strong> Config-drift detection against an approved baseline, regression checks after upgrades, pre-run rules drawn from past incidents, and code-change review that ends in a patch an engineer applies.</p>
+              <p><strong>Test and run preparation.</strong> Leveled test plans, from a single operation to a full workflow, and material feed plans with step-by-step loading guidance.</p>
+              <p><strong>Knowledge that builds up.</strong> Each understood incident becomes a fingerprinted case that engineers review, every diagnosis starts by checking those cases, and recurring failures can be promoted into pre-run rules. Questions about team docs get answers with citations.</p>
+              <p><strong>A platform teams build on.</strong> Teams install it themselves, and engineers outside the core project have built chat bots on the same capability layer for error analysis, status tracking, and reports. A new site is a configuration change, not a code change.</p>
+              <p><strong>Production software.</strong> 50+ capabilities over 10+ data-source types, 1,700+ automated tests at about 90% coverage, strict typing, and 17 quality gates on every commit. Database access is read-only through named queries, and anything that acts on hardware needs explicit confirmation.</p>
             </div>
           </details>
-          <div class="chips"><span class="chip">LLM Agents</span><span class="chip">Real-Time Error Analysis</span><span class="chip">Log Service</span><span class="chip">Knowledge Base</span><span class="chip">Agentic Workflows</span><span class="chip">Python</span><span class="chip">mypy --strict</span><span class="chip">SQLite FTS5</span><span class="chip">CI/CD</span></div>
+          <div class="chips"><span class="chip">LLM Agents</span><span class="chip">Operational Context</span><span class="chip">Live Troubleshooting</span><span class="chip">Root-Cause Analysis</span><span class="chip">Preflight Validation</span><span class="chip">Config Drift Detection</span><span class="chip">Knowledge Base</span><span class="chip">Python</span><span class="chip">mypy --strict</span><span class="chip">CI/CD</span></div>
           <div class="links"><a href="mailto:chuan120@alumni.jh.edu?subject=AI%20Operations%20Platform" aria-label="Email me about the AI operations platform">Proprietary — ask for a walkthrough</a></div>
         </div>
       </div>
@@ -793,7 +795,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
       </div>
       <div class="skill-group reveal">
         <h3>AI &amp; Agentic Systems</h3>
-        <div class="chips"><span class="chip">LLM Agents</span><span class="chip">Real-Time Error Analysis</span><span class="chip">Knowledge Bases &amp; Retrieval</span><span class="chip">Log Analytics</span><span class="chip">Agentic Workflow Design</span><span class="chip">Tool-Use &amp; Function-Calling Design</span><span class="chip">Eval &amp; Test Harnesses</span><span class="chip">Multi-Agent Orchestration</span><span class="chip">Guardrails &amp; Safety Gating</span></div>
+        <div class="chips"><span class="chip">LLM Agents</span><span class="chip">Root-Cause Analysis</span><span class="chip">Knowledge Bases &amp; Retrieval</span><span class="chip">Telemetry &amp; Log Integration</span><span class="chip">Agentic Workflow Design</span><span class="chip">Tool-Use &amp; Function-Calling Design</span><span class="chip">Eval &amp; Test Harnesses</span><span class="chip">Multi-Agent Orchestration</span><span class="chip">Guardrails &amp; Safety Gating</span></div>
       </div>
       <div class="skill-group reveal">
         <h3>Software &amp; Mechanical</h3>
@@ -812,9 +814,11 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
     <div class="about-flex">
       <div class="about-text reveal">
         <p>I started in mechanical engineering at <strong>National Taiwan University</strong>, then spent my early career with my hands on hardware — building <strong>a combat robot</strong> for a streaming series that surpassed one billion cumulative views and engineering surgical camera systems that had to survive drops, dust, and operating rooms.</p>
-        <p>After Dynacolor, I completed my national service in Taiwan and prepared for graduate school. Wanting to close the loop between mechanism and intelligence, I then earned my <strong>M.S.E. in Robotics at Johns Hopkins</strong> (GPA 3.9), working on medical robotics at LCSR under <a href="https://engineering.jhu.edu/faculty/russell-taylor/" target="_blank" rel="noopener">Russell H. Taylor</a> and lab automation at the NIH.</p>
-        <p>Today at <strong>XtalPi</strong> I'm the primary technical owner for automation across U.S. operations — production deployments where a robot that "usually works" isn't good enough, and the <strong>AI operations platform</strong> that teams across XtalPi's automation departments now use to diagnose and run those systems. The common thread: I'm happiest at the boundary where mechanical design, perception, software, and AI meet — and I've shipped work in all four.</p>
-        <p>I also build <em>with</em> AI the way I build robots: orchestrated multi-agent development workflows — parallel branches with cross-model review gates, strict typing, and enforced test coverage before anything merges. The same discipline I apply to hardware, applied to the agents that help run it.</p>
+        <p>After national service in Taiwan, I went back to school to close the loop between mechanism and intelligence, earning my <strong>M.S.E. in Robotics at Johns Hopkins</strong> (GPA 3.9) while working on medical robotics under <a href="https://engineering.jhu.edu/faculty/russell-taylor/" target="_blank" rel="noopener">Russell H. Taylor</a> and lab automation at the NIH.</p>
+        <p>Today at <strong>XtalPi</strong> I'm the primary technical owner for automation across U.S. operations, taking robotic systems from lab demos to production floors, where a robot that "usually works" isn't good enough.</p>
+        <p>I also lead the <strong>AI operations platform</strong> that turns what our robots, runs, and engineers know into shared context for LLM agents, so that knowledge stops living in a few people's heads. New engineers get up to speed within a week, operators get answers without paging an engineer, teams across time zones work from the same picture instead of waiting overnight, and leads can read risk from recent errors before setting the next timeline.</p>
+        <p>I build <em>with</em> AI the way I build robots: orchestrated multi-agent development workflows, where parallel branches pass cross-model review gates, strict typing, and enforced test coverage before anything merges. It's the same discipline I bring to hardware, applied to the agents that help run it.</p>
+        <p>The common thread: I'm happiest at the boundary where mechanical design, perception, software, and AI meet — and I've shipped work in all four.</p>
       </div>
       <div class="about-side reveal">
         <figure class="about-card">
@@ -1553,6 +1557,16 @@ function seeded(s){ return ()=>{ s = (s * 16807) % 2147483647; return (s - 1) / 
   if (!CODE && !testSink) return;
   if (location.hostname !== 'austinhuang823.github.io' && !testSink) return;
   if (navigator.doNotTrack === '1' || window.doNotTrack === '1' || navigator.msDoNotTrack === '1' || navigator.globalPrivacyControl || navigator.webdriver) return;
+  // Owner opt-out, same convention as GoatCounter's count.js: open the site with #toggle-goatcounter once per browser.
+  try{
+    if (location.hash === '#toggle-goatcounter'){
+      var skip = localStorage.getItem('skipgc') === 't';
+      if (skip) localStorage.removeItem('skipgc'); else localStorage.setItem('skipgc', 't');
+      alert(skip ? 'GoatCounter tracking is now ENABLED in this browser.' : 'GoatCounter tracking is now DISABLED in this browser.');
+      history.replaceState(null, '', location.pathname + location.search);
+    }
+    if (localStorage.getItem('skipgc') === 't' && !testSink) return;
+  }catch(err){}
 
   var endpoint = CODE ? 'https://' + CODE + '.goatcounter.com/count' : '';
   var memory = Object.create(null);
