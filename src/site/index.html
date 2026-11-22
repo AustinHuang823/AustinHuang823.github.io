@@ -406,7 +406,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
     <div class="kicker">Robotics &amp; Automation Systems · Boston, MA</div>
     <h1>Austin Huang</h1>
     <div class="alt-name">Ching-Yang Huang</div>
-    <p class="lede">I take robots from lab demos to <strong>production floors</strong> — systems integration, vision-guided manipulation, and simulation for real-world automation — and build the <strong>AI agents that help operate them</strong>. Currently leading North America automation systems at <strong>XtalPi</strong>.</p>
+    <p class="lede">I take robots from lab demos to <strong>production floors</strong> — systems integration, vision-guided manipulation, and simulation for real-world automation — and build the <strong>AI agents that make their failures quick to explain</strong>. Currently leading North America automation systems at <strong>XtalPi</strong>.</p>
     <div class="cta-row">
       <a class="btn primary" href="#projects">View projects</a>
       <a class="btn" href="assets/docs/Resume_AustinHuang.pdf" target="_blank" rel="noopener">Resume (PDF)</a>
@@ -431,9 +431,9 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
 <div class="stats" role="region" aria-label="Key results">
   <div class="wrap">
     <div class="stats-grid">
-      <div class="stat reveal"><div class="stat-num" aria-hidden="true"><span class="cnt" data-to="59">59</span><span class="arrow">→</span><span class="cnt" data-to="100">100</span>%</div><span class="sr-only">From 59 to 100 percent:</span><div class="stat-label">Task pass rate on a live production pharma deployment</div></div>
+      <div class="stat reveal"><div class="stat-num" aria-hidden="true"><span class="cnt" data-from="59" data-to="100">100</span>%</div><span class="sr-only">100 percent, up from 59:</span><div class="stat-label">Milligram dosing at site acceptance, every powder tested · up from 59%</div></div>
       <div class="stat reveal"><div class="stat-num" aria-hidden="true"><span class="down">↓</span><span class="cnt" data-to="94">94</span>%</div><span class="sr-only">Down 94 percent:</span><div class="stat-label">Operational failures after system-level reliability overhaul</div></div>
-      <div class="stat reveal"><div class="stat-num" aria-hidden="true"><span class="cnt" data-to="29">29</span><span class="arrow">→</span><span class="cnt" data-to="98">98</span>%</div><span class="sr-only">From 29 to 98 percent:</span><div class="stat-label">Application target-range hit rate across validation cases</div></div>
+      <div class="stat reveal"><div class="stat-num" aria-hidden="true"><span class="cnt" data-from="29" data-to="98">98</span>%</div><span class="sr-only">98 percent, up from 29:</span><div class="stat-label">Doses within 0.5 mg on a 3 mg target · up from 29%</div></div>
       <div class="stat reveal"><div class="stat-num">1st</div><div class="stat-label">U.S. commercial deployment of XtalPi's platform — stabilized end-to-end</div></div>
     </div>
   </div>
@@ -454,11 +454,11 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
           <li>Lead XtalPi's <strong>U.S. automation engineering team</strong>, building it from a one-person function and coaching engineers through live troubleshooting cases and the AI operations platform until the team could develop, validate, and deliver system updates <strong>independently</strong>, in the field and in the Boston lab.</li>
           <li>Built the engineering capacity behind the <strong>order-of-magnitude growth</strong> of XtalPi's North American automation business, from its first deployment to a <strong>multi-million-dollar program</strong>.</li>
           <li>Own end-to-end deployment and stabilization of a <strong>production-grade automated chemistry R&amp;D platform</strong> — system architecture, integration logic, and rollout readiness for XtalPi's first U.S. commercial deployment.</li>
-          <li>Primary on-site system owner at <strong>a Fortune 500 pharma partner</strong>: raised FAT/SAT task pass rates <strong>59% → 100%</strong> under real operating constraints; developed an error model that raised the rate of application results landing within jointly agreed target ranges <strong>29% → 98%</strong> across hundreds of validation cases.</li>
+          <li>Primary on-site system owner at <strong>a Fortune 500 pharma partner</strong>: took a multimodal micro-dispensing robot from 59% to <strong>100% agreement with an independent reference balance</strong> at site acceptance by isolating failure modes one factor at a time and engineering out static-driven sensor drift; paired the drift fixes with an error model that keeps measurement error from accumulating, raising milligram doses within the target band <strong>29% → 98%</strong> and cutting cycle time from about 16 to 13 minutes.</li>
           <li>Cut operational failures by <strong>94%</strong> through reliability engineering across task coordination, vision-guided manipulation, and failure handling — contributing to customer adoption.</li>
-          <li>Developed a <strong>monocular contour-based calibration method</strong> for end-effector pose correction, validated in a custom MuJoCo simulation framework — outperforming the prior stereo-based approach with less hardware.</li>
-          <li>Lead the architecture and development of XtalPi's <strong>AI operations platform</strong>, integrating live robot telemetry, execution logs, and engineering knowledge into <strong>shared operational context for LLM agents</strong> across automation teams.</li>
-          <li>Engineer LLM agents for <strong>live troubleshooting, postmortem root-cause analysis, and preflight validation</strong>, correlating robot, workflow, and resource state to turn operational evidence into actionable diagnoses, reusable knowledge, and automated checks.</li>
+          <li>Developed a <strong>single-camera 5-DoF tool-offset calibration</strong> that uses known robot motion as a constraint and solves position and tilt in one closed-form least-squares fit: under 0.1 mm versus about 3 mm for the earlier stereo algorithm in MuJoCo, then validated on the real robot.</li>
+          <li>Designed, built, and lead XtalPi's <strong>AI operations platform</strong>, integrating robot telemetry, execution logs, configs, and lab reports into <strong>shared operational context for LLM agents</strong>; the model chooses what evidence to request while deterministic tools enforce read-only access and approval for every write. <strong>Used daily by four teams across three products.</strong></li>
+          <li>Engineer LLM agents for <strong>live troubleshooting, postmortem root-cause analysis, and preflight validation</strong>, joining lab results with robot logs and correlating robot, workflow, and resource state to turn operational evidence into actionable diagnoses, reusable knowledge, and automated checks.</li>
           <li>Own <strong>client-facing technical delivery</strong>: site-readiness engineering, acceptance-test evidence packages, upgrade roadmaps, and bilingual (English/Chinese) stakeholder communication.</li>
         </ul>
         <div class="chips"><span class="chip">ABB Robots</span><span class="chip">AGV / AMR</span><span class="chip">ROS 2</span><span class="chip">MuJoCo</span><span class="chip">OpenCV</span><span class="chip">LLM Agents</span><span class="chip">Python</span><span class="chip">C++</span></div>
@@ -488,10 +488,10 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
         <div class="job-head"><h3>Dynacolor</h3> <span class="period">May 2019 – Mar 2021 · Taipei, Taiwan</span></div>
         <div class="role">R&amp;D Engineer</div>
         <ul role="list">
-          <li>Engineered mechanical components for a <strong>6-DOF surgical camera system</strong> for fluorescence-guided surgery (IP66/67, IK10).</li>
+          <li>Designed the prototype of a <strong>now FDA-cleared 6-DoF surgical camera system</strong> for fluorescence-guided surgery; took other camera hardware to IP66/67 and IK10.</li>
           <li>Reduced product defects by <strong>more than 80%</strong> through SOP development, root-cause analysis, and process optimization.</li>
         </ul>
-        <div class="chips"><span class="chip">Creo</span><span class="chip">GD&amp;T</span><span class="chip">Die Casting</span><span class="chip">Injection Molding</span></div>
+        <div class="chips"><span class="chip">Creo</span><span class="chip">Error Analysis</span><span class="chip">Die Casting</span><span class="chip">Injection Molding</span></div>
       </div>
 
       <div class="job reveal">
@@ -523,32 +523,32 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
     <div class="proj-grid">
 
       <div class="card reveal wide" data-tags="production">
-        <div class="media gauge" role="img" aria-label="Task pass rate improved from 59 to 100 percent — failure modes isolated by ablation testing and sensor drift engineered out. Application target-range hit rate improved from 29 to 98 percent across hundreds of validation cases, driven by a purpose-built error model. Operational failures down 94 percent — every incident root-caused, fixes proven on production runs.">
+        <div class="media gauge" role="img" aria-label="Milligram dosing agreement with an independent reference rose from 59 to 100 percent at site acceptance — failure modes isolated one factor at a time and sensor drift engineered out. Doses within 0.5 mg on a 3 mg target rose from 29 to 98 percent, with an error model that stops error from accumulating. Operational failures down 94 percent — every incident root-caused, fixes proven on production runs.">
           <div class="gauge-col" aria-hidden="true">
             <div class="gauge-wrap">
               <svg viewBox="0 0 160 160">
                 <circle cx="80" cy="80" r="66" fill="none" style="stroke:var(--border)" stroke-width="10"/>
                 <circle cx="80" cy="80" r="66" fill="none" style="stroke:var(--accent)" stroke-width="10" stroke-linecap="round" pathLength="100" stroke-dasharray="100" class="gauge-ring" transform="rotate(-90 80 80)"/>
               </svg>
-              <div class="gauge-center"><div class="gn"><span class="cnt" data-from="59" data-to="100">100</span>%</div><div class="gl">task pass rate</div></div>
+              <div class="gauge-center"><div class="gn"><span class="cnt" data-from="59" data-to="100">100</span>%</div><div class="gl">at acceptance</div></div>
             </div>
-            <div class="gauge-cap">failure modes isolated by ablation testing; sensor drift engineered out</div>
+            <div class="gauge-cap">every powder tested, up from 59%; sensor drift engineered out</div>
           </div>
           <div class="gauge-col" aria-hidden="true">
             <div class="gauge-wrap tgt-wrap">
               <canvas class="target-canvas"></canvas>
             </div>
-            <div class="gauge-cap"><span class="tgt-n">98</span> of every 100 cases inside the target range, up from 29 (one dot per percent)</div>
+            <div class="gauge-cap"><span class="tgt-n">98</span> of every 100 doses within 0.5 mg of a 3 mg target, up from 29 (one dot per percent)</div>
           </div>
           <div class="gauge-side" aria-hidden="true">
-            <div class="gs"><div class="n"><span class="cnt" data-from="29" data-to="98">98</span>% <span class="unit">target-range hit rate</span></div><div class="l">driven by a purpose-built error model, measured across hundreds of validation cases</div></div>
+            <div class="gs"><div class="n"><span class="cnt" data-from="29" data-to="98">98</span>% <span class="unit">doses on target</span></div><div class="l">drift fixed, then an error model that stops error from accumulating over a run</div></div>
             <div class="gs"><div class="n"><span class="down">↓</span><span class="cnt" data-to="94">94</span>% <span class="unit">operational failures</span></div><div class="l">every incident root-caused; fixes proven on production runs</div></div>
           </div>
         </div>
         <div class="card-body">
           <div class="card-meta">XtalPi · Production case study</div>
           <h3>Stabilizing a Production Robotic Chemistry Platform</h3>
-          <div class="impact">59→100% task pass rate · −94% operational failures, on site at a Fortune 500 pharma partner</div>
+          <div class="impact">100% dosing accuracy at site acceptance · −94% operational failures, on site at a Fortune 500 pharma partner</div>
           <p>XtalPi's first U.S. commercial deployment: an automated chemistry R&amp;D platform — robot arms, AGVs, vision, and scheduling — that had to hold up under a customer's real operating constraints. As primary on-site system owner, I led the reliability overhaul that took it from demo-grade to production-grade, contributing to customer adoption and the order-of-magnitude growth of XtalPi's North American automation business. Details are proprietary — I’m happy to walk through them live.</p>
           <div class="chips"><span class="chip">ABB Robots</span><span class="chip">AGV / AMR</span><span class="chip">Vision-Guided Manipulation</span><span class="chip">Reliability Engineering</span><span class="chip">Ablation Testing</span><span class="chip">Error Modeling</span><span class="chip">Root-Cause Analysis</span><span class="chip">System Architecture</span><span class="chip">Python</span><span class="chip">C++</span></div>
           <div class="links"><a href="https://www.linkedin.com/feed/update/urn:li:activity:7339295576313733120/" target="_blank" rel="noopener">See the lab — official XtalPi post</a><a href="mailto:chuan120@alumni.jh.edu?subject=Production%20case%20study%20walkthrough" aria-label="Email me for a case study walkthrough">Ask for a walkthrough</a></div>
@@ -568,10 +568,10 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
           </div>
         </div>
         <div class="card-body">
-          <div class="card-meta">XtalPi · Development, test &amp; deployment teams</div>
+          <div class="card-meta">XtalPi · Used daily by four teams across three products</div>
           <h3>AI Operations Platform for Robotic Automation</h3>
           <div class="impact">One shared operations layer for robotic lab automation: monitor runs, diagnose faults, keep failures from repeating, prepare tests, and share what teams learn</div>
-          <p>Shared operational context for LLM agents. The platform puts robot telemetry, process records, logs, device configs, and engineering knowledge behind one governed data plane, so agents can say where a run stands, triage a fault against a reviewed incident casebook, trace the root cause afterward, and catch config drift before the next run. Every answer cites its source.</p>
+          <p>Shared operational context for LLM agents. The platform puts robot telemetry, process records, logs, device configs, and engineering knowledge behind one governed data plane, so agents can say where a run stands, triage a fault against a reviewed incident casebook, trace the root cause afterward, and catch config drift before the next run. Every answer cites its source. The model decides what evidence to ask for and how to read it; code decides what it can touch: fixed access paths, read-only named queries, and an approval for every write.</p>
           <details class="depth" data-pid="ai-operations-agent-safety">
             <summary>Inside the system</summary>
             <div class="depth-body">
@@ -580,8 +580,8 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
               <p><strong>Prevention and change control.</strong> Config-drift detection against an approved baseline, regression checks after upgrades, pre-run rules drawn from past incidents, and code-change review that ends in a patch an engineer applies.</p>
               <p><strong>Test and run preparation.</strong> Leveled test plans, from a single operation to a full workflow, and material feed plans with step-by-step loading guidance.</p>
               <p><strong>Knowledge that builds up.</strong> Each understood incident becomes a fingerprinted case that engineers review, every diagnosis starts by checking those cases, and recurring failures can be promoted into pre-run rules. Questions about team docs get answers with citations.</p>
-              <p><strong>A platform teams build on.</strong> Teams install it themselves, and engineers outside the core project have built chat bots on the same capability layer for error analysis, status tracking, and reports. A new site is a configuration change, not a code change.</p>
-              <p><strong>Production software.</strong> 55+ capabilities over 10+ data-source types, 2,300+ automated tests at 92% coverage, strict typing, and 18 quality gates on every commit. Database access is read-only through named queries, and anything that acts on hardware needs explicit confirmation.</p>
+              <p><strong>A platform teams build on.</strong> Teams install it themselves, and engineers outside the core project have built chat bots on the same capability layer for error analysis, status tracking, and reports. A new site is a configuration change, not a code change, and engineers new to the system used it to take the latest multi-robot deployment through client acceptance.</p>
+              <p><strong>Production software.</strong> Nearly 60 capabilities over 10+ data-source types, 2,300+ automated tests at 92% coverage, strict typing, and 18 quality gates on every commit. Database access is read-only through named queries, and anything that acts on hardware needs explicit confirmation.</p>
             </div>
           </details>
           <div class="chips"><span class="chip">LLM Agents</span><span class="chip">Operational Context</span><span class="chip">Live Troubleshooting</span><span class="chip">Root-Cause Analysis</span><span class="chip">Preflight Validation</span><span class="chip">Config Drift Detection</span><span class="chip">Knowledge Base</span><span class="chip">Python</span><span class="chip">mypy --strict</span><span class="chip">CI/CD</span></div>
@@ -596,10 +596,10 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
           <div class="big-metric"><div class="n">5-DoF</div><div class="l">tool-tip pose correction, one camera</div></div>
         </div>
         <div class="card-body">
-          <div class="card-meta">XtalPi · In production</div>
+          <div class="card-meta">XtalPi · Running on the real robot</div>
           <h3>Monocular Calibration for Robot End-Effectors</h3>
-          <div class="impact">Replaced a stereo rig with a single camera — higher precision, less hardware</div>
-          <p>Contour-based geometric modeling + least-squares regression to estimate 5-DoF tool-tip pose error, with a MuJoCo simulation framework validating accuracy across randomized pose-error cases. Built for solid-dispensing workflows at XtalPi.</p>
+          <div class="impact">One camera and known robot motion beat the stereo method: under 0.1 mm against about 3 mm in simulation, then proven on the real robot</div>
+          <p>Each known rotation adds equations, not unknowns, so the tool tip's position and tilt come from one closed-form least-squares fit against a baseline scan, with no full camera calibration. I built a MuJoCo framework to check it against ground truth on randomized offsets, then took it onto the real robot alongside the production stereo setup. Built for micro-dispensing at XtalPi.</p>
           <div class="chips"><span class="chip">MuJoCo</span><span class="chip">OpenCV</span><span class="chip">Python</span><span class="chip">Least-Squares</span></div>
           <div class="links"><a href="mailto:chuan120@alumni.jh.edu?subject=Monocular%20Calibration" aria-label="Email me about monocular calibration">Proprietary — ask me about it</a></div>
         </div>
@@ -815,7 +815,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--faint);font
       </div>
       <div class="skill-group reveal">
         <h3>Software &amp; Mechanical</h3>
-        <div class="chips"><span class="chip">Python</span><span class="chip">C++</span><span class="chip">C#</span><span class="chip">MATLAB</span><span class="chip">Linux</span><span class="chip">Git</span><span class="chip">Docker</span><span class="chip">AWS / Azure</span><span class="chip">Creo</span><span class="chip">SolidWorks</span><span class="chip">Femap</span><span class="chip">GD&amp;T</span></div>
+        <div class="chips"><span class="chip">Python</span><span class="chip">C++</span><span class="chip">C#</span><span class="chip">MATLAB</span><span class="chip">Linux</span><span class="chip">Git</span><span class="chip">Docker</span><span class="chip">AWS / Azure</span><span class="chip">Creo</span><span class="chip">SolidWorks</span><span class="chip">Femap</span></div>
       </div>
     </div>
   </div>
